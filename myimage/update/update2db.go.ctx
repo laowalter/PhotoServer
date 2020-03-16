@@ -12,9 +12,9 @@ import (
 	"fmt"
 	"image/jpeg"
 	"io"
-	"log"
 	"os"
 	"path/filepath"
+	"reflect"
 	"runtime"
 	"time"
 
@@ -23,7 +23,6 @@ import (
 	"github.com/photoServer/myimage"
 
 	. "github.com/logrusorgru/aurora"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -33,32 +32,22 @@ func main() {
 	path := "/home/walter/go/src/github.com/photoServer/testData"
 
 	clientOptions := options.Client().ApplyURI(uri)
+	//fmt.Println("clientOptions type:", reflect.TypeOf(clientOptions), "\n")
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
 		fmt.Println("mongo.Connect() ERROR:", err)
 		os.Exit(1)
 	}
-	col := client.Database(database).Collection(collection)
 
-	mod := mongo.IndexModel{
-		Keys: bson.M{
-			"md5": 1, // index in ascending order, md5 is from the `bson: "md5"`
-		}, Options: options.Index().SetUnique(true),
-	}
-	ind, err := col.Indexes().CreateOne(context.TODO(), mod)
-	if err != nil { // Check if the CreateOne() method returned any errors
-		fmt.Println("Indexes().CreateOne() ERROR:", err)
-		os.Exit(1)
-	} else { // API call returns string of the index name
-		fmt.Println("CreateOne() index:", ind)
-	}
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	col := client.Database(database).Collection(collection)
+	//fmt.Println("Collection type:", reflect.TypeOf(col), "\n")
+
 	files := myimage.ListPics(path)
 	total := len(files)
 	fmt.Printf("Total files number is: %v\n", total)
-
 	i := 0
 	for _, file := range files {
-
 		i++
 		fmt.Printf("Dealing with %v/%v......", i, total)
 		document := &photoServer.Document{
@@ -76,31 +65,21 @@ func main() {
 			os.Exit(1)
 		}
 
-		_, insertErr := col.InsertOne(context.TODO(), document)
+		result, insertErr := col.InsertOne(ctx, document)
 		if insertErr != nil {
-			//check if the Md5 already exist in db is yes
-			filter := bson.M{"md5": document.Md5}
-			count, err := col.CountDocuments(context.TODO(), filter)
-			if err != nil {
-				log.Fatal(err)
-			}
-			if count == 1 {
-				fmt.Printf("File: %v already exist\n", Red(document.Path))
-
-			} else {
-				fmt.Println(Red("Md5 is not unique index in database! Wrong"))
-				os.Exit(1)
-			}
-
-		} else {
-			fmt.Printf("%s %v\n", Green("Inserted"), document.FileName)
-
+			fmt.Println("InsertOne ERROR:", insertErr)
+			os.Exit(1)
 		}
+		fmt.Println("InsertOne() result type: ", reflect.TypeOf(result))
+		fmt.Println("InsertOne() API result:", result)
+
+		fmt.Printf("%s %v\n", Green("Inserted"), document.FileName)
 
 	}
 }
 
 func thumb(file string) []byte { //file: wholepath contains filename.
+
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	img, err := imaging.Open(file)
 	if err != nil {
@@ -116,7 +95,6 @@ func thumb(file string) []byte { //file: wholepath contains filename.
 
 	return buf.Bytes()
 }
-
 func fileMd5(filePath string) (string, error) {
 	var returnMD5String string
 	file, err := os.Open(filePath)
