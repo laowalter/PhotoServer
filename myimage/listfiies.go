@@ -1,9 +1,12 @@
-package main
+package myimage
 
 import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
+
+	"github.com/photoServer" //Global Defination
 )
 
 func ListAllFilesTree(dirPath string) []string {
@@ -23,8 +26,16 @@ func ListAllFilesTree(dirPath string) []string {
 	return fileList
 }
 
+func contains(arr []string, str string) bool {
+	for _, a := range arr {
+		if a == str {
+			return true
+		}
+	}
+	return false
+}
+
 func ListPicVideoFilesTree(dirPath string) []string {
-	ext := ".jpg"
 	var fileList []string
 	err := filepath.Walk(dirPath,
 		func(path string, f os.FileInfo, err error) error {
@@ -32,7 +43,7 @@ func ListPicVideoFilesTree(dirPath string) []string {
 				return err
 			}
 
-			if filepath.Ext(path) == ext {
+			if contains(photoServer.PICVIDEO(), filepath.Ext(strings.ToLower(path))) {
 				fileList = append(fileList, path)
 			}
 
@@ -44,13 +55,22 @@ func ListPicVideoFilesTree(dirPath string) []string {
 	return fileList
 }
 
-/*
-func main() {
-	path := "/home/walter/go/src/github.com/photoServer/testData/"
-	files := ListAllFilesTree(path)
-	for _, file := range files {
-		fmt.Println(file)
-	}
+func ListPics(dirPath string) []string {
+	var fileList []string
+	err := filepath.Walk(dirPath,
+		func(path string, f os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
 
+			if contains(photoServer.PIC(), filepath.Ext(strings.ToLower(path))) {
+				fileList = append(fileList, path)
+			}
+
+			return nil
+		})
+	if err != nil {
+		log.Println(err)
+	}
+	return fileList
 }
-*/
