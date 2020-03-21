@@ -20,21 +20,19 @@ func main() {
 	col := db.Collection(collection)
 
 	result := &global.Document{}
-	filter := bson.M{"filename": bson.M{"$eq": "DSC00181.JPG.jpg"}}
+	filter := bson.M{"md5": bson.M{"$eq": "1ab288e0e8aad9749afe1361697dfea3"}}
 	err := col.FindOne(context.TODO(), filter).Decode(&result)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(result.Thumbnail)
-
-	thumb := base64.StdEncoding.EncodeToString(result.Thumbnail)
+	thumbnail := base64.StdEncoding.EncodeToString(result.Thumbnail)
 	r := gin.Default()
 	r.LoadHTMLGlob("templates/*")
 	r.GET("/index", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "./index.html", gin.H{
 			"title": "www.eliglad.com",
-			"thumb": thumb,
+			"thumb": thumbnail,
 		})
 	})
 

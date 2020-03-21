@@ -17,8 +17,10 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"time"
 
+	"github.com/barasher/go-exiftool"
 	"github.com/disintegration/imaging"
 	"github.com/photoServer/global"
 
@@ -49,14 +51,27 @@ func main() {
 		return
 	}
 
-	files := global.ListPics(absPath) //仅处理图像找到截图视频exif信息再说。
-	total := len(files)
+	files, err := global.ListFiles(absPath, global.PIC) //仅处理图像找到截图视频exif信息再说。
+	if err != nil {
+		panic(err)
+	}
 
-	if total == 0 {
+	if len(files) == 0 {
 		fmt.Printf("No files in directory: %v need to update!\n", Red(absPath))
 		return
 	}
 
+	err = insert(files)
+	if err != nil {
+		fmt.Println("Insert Error")
+		panic(err)
+	}
+
+}
+
+func insert(files []string) error {
+
+	total := len(files)
 	fmt.Printf("Total files number is: %v\n", total)
 	database, collection, uri := "album", "pic", "mongodb://localhost:27017"
 
@@ -86,7 +101,6 @@ func main() {
 		document := &global.Document{
 			FileName:    filepath.Base(file),
 			Path:        file,
-			CreateTime:  time.Now(),
 			ContentType: "jpeg",
 			Thumbnail:   thumb(file),
 		}
@@ -97,6 +111,8 @@ func main() {
 			fmt.Println("Md5 Error", document.Path)
 			os.Exit(1)
 		}
+
+		document.Exif, document.GPSPosition = exif(file)
 
 		_, insertErr := col.InsertOne(context.TODO(), document)
 		if insertErr != nil {
@@ -112,7 +128,7 @@ func main() {
 				fmt.Printf("File: %v already exist, filename and path updated.\n", Red(document.Path))
 			} else {
 				fmt.Println(Red("Md5 is not unique index in database! Wrong"))
-				os.Exit(1)
+				return err
 			}
 
 		} else {
@@ -121,6 +137,65 @@ func main() {
 		}
 
 	}
+	return nil
+}
+
+func exif(file string) (global.Exif, global.GPSPosition) {
+
+	var exifInfo global.Exif
+	var gpsInfo global.GPSPosition
+
+	et, err := exiftool.NewExiftool()
+	if err != nil {
+		fmt.Printf("Error when intializing: %v\n", err)
+		return exifInfo, gpsInfo
+	}
+	defer et.Close()
+
+	fileInfos := et.ExtractMetadata(file)
+	for _, fileInfo := range fileInfos {
+		if fileInfo.Err != nil {
+			fmt.Printf("Error concerning %v: %v\n", fileInfo.File, fileInfo.Err)
+			continue
+		}
+
+		for k, v := range fileInfo.Fields {
+			//fmt.Printf("key: %v, value: %v, valueType: %T\n", k, v, v)
+			switch k {
+			case "CreateDate":
+				_cDate := fmt.Sprintf("%v", v)
+				if err != nil {
+					fmt.Printf("%s, Cannot convert %s of %v\n", Red("Opps!"), Red("CreateDate"), file)
+				}
+				exifInfo.CreadTime, err = time.Parse("2006:01:02 15:04:05", _cDate)
+			case "Make":
+				exifInfo.Make = fmt.Sprintf("%v", v)
+			case "Model":
+				exifInfo.Model = fmt.Sprintf("%v", v)
+			case "LensSpec":
+				exifInfo.LensSpec = fmt.Sprintf("%v", v)
+			case "LensID":
+				exifInfo.LensID = fmt.Sprintf("%v", v)
+			case "ShutterSpeed":
+				exifInfo.ShutterSpeed = fmt.Sprintf("%v", v)
+			case "ExposureTime":
+				exifInfo.ExposureTime = fmt.Sprintf("%v", v)
+			case "ISO":
+				exifInfo.ISO = fmt.Sprintf("%v", v)
+			case "Aperture":
+				exifInfo.Aperture = "f/" + fmt.Sprintf("%v", v)
+			case "ExposureCompensation":
+				exifInfo.ExposureCompensation = fmt.Sprintf("%v", v)
+			case "GPSPosition":
+				_gpsPosition := fmt.Sprintf("%v", v)
+				gps := strings.Split(_gpsPosition, ",")
+				gpsInfo.Latitude, gpsInfo.Longitude = gps[0], gps[1]
+			default:
+			}
+		}
+
+	}
+	return exifInfo, gpsInfo
 }
 
 func thumb(file string) []byte { //file: wholepath contains filename.
@@ -129,7 +204,11 @@ func thumb(file string) []byte { //file: wholepath contains filename.
 	if err != nil {
 		panic(err)
 	}
-	thumb := imaging.Thumbnail(img, 200, 200, imaging.CatmullRom)
+
+	rectangle := img.Bounds()
+	t_width := int(rectangle.Dx() * global.ThumbnailHeight / rectangle.Dy())
+	thumb := imaging.Thumbnail(img, t_width, global.ThumbnailHeight, imaging.CatmullRom)
+
 	buf := new(bytes.Buffer)
 	err = jpeg.Encode(buf, thumb, nil)
 	if err != nil {

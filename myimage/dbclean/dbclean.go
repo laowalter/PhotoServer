@@ -41,12 +41,12 @@ func main() {
 	removedNum := 0
 
 	cursor, err := col.Find(context.TODO(), bson.D{})
-	fmt.Println("Current cursor: ", cursor.ID)
 	if err != nil {
 		fmt.Println("Finding all documents ERROR:", err)
 		defer cursor.Close(context.TODO())
 	} else {
 		for cursor.Next(context.TODO()) {
+			//fmt.Println(elem[0])
 			var result global.Document
 			err := cursor.Decode(&result)
 			if err != nil {
@@ -57,7 +57,7 @@ func main() {
 			_, err = os.Stat(result.Path)
 			if os.IsNotExist(err) {
 				fmt.Printf("%s  %v does not exist", Red("OOPs!"), Red(result.Path))
-				_, err := col.DeleteOne(context.TODO(), bson.M{"path": result.Path})
+				_, err := col.DeleteOne(context.TODO(), bson.M{"_id": cursor.Current.Lookup("_id")})
 				if err != nil {
 					fmt.Println(err)
 					fmt.Printf("%s can not remove record %s from database.", Red("Oops!"), Red(result.Path))
