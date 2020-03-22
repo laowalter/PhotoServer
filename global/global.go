@@ -5,6 +5,11 @@ import (
 )
 
 const (
+	// Used in picupdate.go remove the wholepath
+	// webserver/main.go /photo/roots
+	PhotoRootBase = "/data/album"
+
+	//Fixed Thubnail height
 	ThumbnailHeight = 250
 )
 

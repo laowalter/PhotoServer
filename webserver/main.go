@@ -23,7 +23,8 @@ func main() {
 	documentList := getPicList(col)
 
 	r := gin.Default()
-	r.Static("/photo", "./statics")
+	r.Static("/css", "./statics")
+	r.Static("/photo", "/data/album")
 
 	r.SetFuncMap(template.FuncMap{
 		"saft": func(str string) template.HTML {
@@ -44,7 +45,7 @@ func main() {
 func getPicList(col *mongo.Collection) []global.Document {
 
 	var documentList []global.Document
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 200*time.Second)
 	defer cancel()
 
 	cursor, err := col.Find(ctx, bson.D{})
@@ -60,7 +61,8 @@ func getPicList(col *mongo.Collection) []global.Document {
 				fmt.Println("cursor.Next() error:", err)
 				os.Exit(1)
 			}
-			//document.Thumbase64 = base64.StdEncoding.EncodeToString(document.Thumbnail)
+			//处理全路径为/data/album/ => /适应 r.static(photo)
+			document.Path = document.Path[len("/data/album")+1:]
 			documentList = append(documentList, document)
 		}
 	}

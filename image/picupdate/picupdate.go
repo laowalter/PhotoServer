@@ -202,7 +202,7 @@ func exif(file string) (global.Exif, global.GPSPosition) {
 
 func thumb(file string) string { //file: wholepath contains filename.
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	img, err := imaging.Open(file)
+	img, err := imaging.Open(file, imaging.AutoOrientation(true))
 	if err != nil {
 		panic(err)
 	}
