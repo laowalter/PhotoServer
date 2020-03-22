@@ -96,6 +96,7 @@ func insert(files []string) error {
 
 	var _elapseTime time.Duration
 	start := time.Now()
+
 	for index, file := range files {
 		fmt.Printf("Dealing with %v/%v......", index+1, total)
 		document := &global.Document{
@@ -103,6 +104,7 @@ func insert(files []string) error {
 			Path:        file,
 			ContentType: "jpeg",
 			Thumbnail:   thumb(file),
+			ImportTime:  time.Now(),
 		}
 
 		var err error
@@ -169,7 +171,7 @@ func exif(file string) (global.Exif, global.GPSPosition) {
 				if err != nil {
 					fmt.Printf("%s, Cannot convert %s of %v\n", Red("Opps!"), Red("CreateDate"), file)
 				}
-				exifInfo.CreadTime, err = time.Parse("2006:01:02 15:04:05", _cDate)
+				exifInfo.CreateTime, err = time.Parse("2006:01:02 15:04:05", _cDate)
 			case "Make":
 				exifInfo.Make = fmt.Sprintf("%v", v)
 			case "Model":

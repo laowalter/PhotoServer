@@ -18,11 +18,11 @@ type Document struct { //mongodb Database: album, collection: pic
 	Path        string `bson:"path"`
 	ContentType string `bson:"content_type"`
 	Thumbnail   string `bson:"thumbnail"` //base64
-	//Thumbnail64 string `bson:"-, omitempty"`
 	Md5         string `bson:"md5"`
 	GPSPosition `bson:"inline, omitempty"`
 	Exif        `bson:"inline, omitempty"`
-	Tags        []string `bson:"tags, omitempty"`
+	Tags        []string  `bson:"tags, omitempty"`
+	ImportTime  time.Time `bson:"import_at"`
 }
 
 type Exif struct {

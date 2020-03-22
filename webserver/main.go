@@ -6,7 +6,6 @@ import (
 	"html/template"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/photoServer/global"
@@ -25,6 +24,7 @@ func main() {
 	r := gin.Default()
 	r.Static("/css", "./statics")
 	r.Static("/photo", "/data/album")
+	r.StaticFile("/favicon.ico", "./assets/favicon.ico")
 
 	r.SetFuncMap(template.FuncMap{
 		"saft": func(str string) template.HTML {
@@ -45,8 +45,9 @@ func main() {
 func getPicList(col *mongo.Collection) []global.Document {
 
 	var documentList []global.Document
-	ctx, cancel := context.WithTimeout(context.Background(), 200*time.Second)
-	defer cancel()
+	//ctx, cancel := context.WithTimeout(context.Background(), 200*time.Second)
+	//defer cancel()
+	ctx := context.TODO()
 
 	cursor, err := col.Find(ctx, bson.D{})
 	if err != nil {
