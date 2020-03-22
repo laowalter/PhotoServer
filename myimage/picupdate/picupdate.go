@@ -93,11 +93,10 @@ func insert(files []string) error {
 		}
 	}
 
-	i := 0
-	for _, file := range files {
-
-		i++
-		fmt.Printf("Dealing with %v/%v......", i, total)
+	var _elapseTime time.Duration
+	start := time.Now()
+	for index, file := range files {
+		fmt.Printf("Dealing with %v/%v......", index+1, total)
 		document := &global.Document{
 			FileName:    filepath.Base(file),
 			Path:        file,
@@ -132,10 +131,12 @@ func insert(files []string) error {
 			}
 
 		} else {
-			fmt.Printf("%s %v\n", Green("Inserted"), document.FileName)
+			fmt.Printf("%s %v", Green("Inserted"), document.FileName)
 
 		}
-
+		_elapseTime = time.Since(start)
+		elapseTime := int64(_elapseTime) / int64(index+1) * int64(total-index-1)
+		fmt.Printf("...%v Seconds left.\n", elapseTime/int64(time.Second))
 	}
 	return nil
 }
