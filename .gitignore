@@ -1,2 +1,12 @@
 testData/*
 *.swp
+*.swo
+*~
+*.jpg
+*.png
+*.JPG
+*.PNG
+*.bmp
+*.BMP
+*.tiff
+*.TIFF
