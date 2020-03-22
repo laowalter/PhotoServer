@@ -26,7 +26,7 @@ type Document struct { //mongodb Database: album, collection: pic
 }
 
 type Exif struct {
-	CreadTime            time.Time
+	CreateTime           time.Time
 	Make                 string
 	Model                string
 	ShutterSpeed         string
