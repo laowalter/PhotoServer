@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"context"
 	"crypto/md5"
+	"encoding/base64"
 	"encoding/hex"
 	"flag"
 	"fmt"
@@ -199,7 +200,7 @@ func exif(file string) (global.Exif, global.GPSPosition) {
 	return exifInfo, gpsInfo
 }
 
-func thumb(file string) []byte { //file: wholepath contains filename.
+func thumb(file string) string { //file: wholepath contains filename.
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	img, err := imaging.Open(file)
 	if err != nil {
@@ -215,7 +216,7 @@ func thumb(file string) []byte { //file: wholepath contains filename.
 	if err != nil {
 		panic(err)
 	}
-	return buf.Bytes()
+	return base64.StdEncoding.EncodeToString(buf.Bytes())
 }
 
 func fileMd5(filePath string) (string, error) {

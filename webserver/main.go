@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/base64"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -61,7 +60,7 @@ func getPicList(col *mongo.Collection) []global.Document {
 				fmt.Println("cursor.Next() error:", err)
 				os.Exit(1)
 			}
-			document.Thumbase64 = base64.StdEncoding.EncodeToString(document.Thumbnail)
+			//document.Thumbase64 = base64.StdEncoding.EncodeToString(document.Thumbnail)
 			documentList = append(documentList, document)
 		}
 	}
