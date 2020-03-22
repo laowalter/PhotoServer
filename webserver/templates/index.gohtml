@@ -5,13 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>posts/index</title>
+    <link rel="stylesheet" href="/photo/index.css">
+    <title>MyAlbum</title>
 </head>
 <body>
-{{.title}}
-
 <div>
-    <img src="data:image/jpeg;base64,{{.thumb}}" />
+    {{range .piclist}}
+        <a href="{{.Path}}">
+        <img src="data:image/jpeg;base64,{{.Thumbnail64}}" />
+        </a>
+    {{end}}
 </div>
 </body>
 </html>

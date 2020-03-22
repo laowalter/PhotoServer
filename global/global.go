@@ -13,6 +13,7 @@ type Document struct { //mongodb Database: album, collection: pic
 	Path        string `bson:"path"`
 	ContentType string `bson:"content_type"`
 	Thumbnail   []byte `bson:"thumbnail"`
+	Thumbnail64 string `bson:"-, omitempty"`
 	Md5         string `bson:"md5"`
 	GPSPosition `bson:"inline, omitempty"`
 	Exif        `bson:"inline, omitempty"`
