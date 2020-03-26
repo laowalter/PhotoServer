@@ -22,8 +22,6 @@ func getYearList(col *mongo.Collection) {
 	//defer cancel()
 	ctx := context.TODO()
 
-	//db.pic.aggregate({$group:{_id:{year:{$year:"$createtime"}}, counter:{$sum:1}}}, {$sort:{"_id.year":-1}})
-
 	/*
 		db.pic.aggregate({$group:
 			{ _id:   {year:{$year:"$createtime"}},
@@ -32,33 +30,32 @@ func getYearList(col *mongo.Collection) {
 			{$sort:{"_id.year":-1}}
 		  )
 	*/
-	//var result []bson.M
-	/* OK:
 	pipeline := []bson.M{bson.M{"$group": bson.M{"_id": bson.M{"year": bson.M{"$year": "$createtime"}},
-		"counter": bson.M{"$sum": -1},
-	}}}
-	*/
-
-	pipeline := []bson.M{bson.M{"$group": bson.M{"_id": bson.M{"year": bson.M{"$year": "$createtime"}},
-		"counter": bson.M{"$sum": -1},
+		"counter": bson.M{"$sum": 1},
 	}},
 		bson.M{"$sort": bson.M{"_id.year": -1}},
 	}
 
-	var result []bson.M
-	//https://docs.mongodb.com/manual/reference/method/db.collection.aggregate/_
 	cursor, err := col.Aggregate(ctx, pipeline)
 	if err != nil {
 		fmt.Println("Aggregate Error", err)
-		//defer cursor.Close(ctx)
 		return
 
-	} else {
-
-		cursor.All(ctx, &result)
-		fmt.Println(result)
 	}
+	defer cursor.Close(ctx)
 
+	for cursor.Next(ctx) {
+		var result bson.M
+		if err := cursor.Decode(&result); err != nil {
+			fmt.Println("Can not decode Aggregate result")
+		}
+		for k, v := range result {
+			fmt.Println(k)
+			fmt.Println(v)
+
+		}
+
+	}
 	return
 }
 
