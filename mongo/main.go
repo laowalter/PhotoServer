@@ -33,21 +33,30 @@ func getYearList(col *mongo.Collection) {
 		  )
 	*/
 	//var result []bson.M
-	pipeline := []bson.M{
-		bson.M{"$group": bson.M{"_id": bson.M{"year": bson.M{"$year": "$createtime"}},
-			"counter": bson.M{"$sum": -1},
-		},
-		},
+	/* OK:
+	pipeline := []bson.M{bson.M{"$group": bson.M{"_id": bson.M{"year": bson.M{"$year": "$createtime"}},
+		"counter": bson.M{"$sum": -1},
+	}}}
+	*/
+
+	pipeline := []bson.M{bson.M{"$group": bson.M{"_id": bson.M{"year": bson.M{"$year": "$createtime"}},
+		"counter": bson.M{"$sum": -1},
+	}},
+		bson.M{"$sort": bson.M{"_id.year": -1}},
 	}
 
-	_, err := col.Aggregate(ctx, pipeline)
+	var result []bson.M
+	//https://docs.mongodb.com/manual/reference/method/db.collection.aggregate/_
+	cursor, err := col.Aggregate(ctx, pipeline)
 	if err != nil {
 		fmt.Println("Aggregate Error", err)
 		//defer cursor.Close(ctx)
 		return
 
 	} else {
-		fmt.Println("passed")
+
+		cursor.All(ctx, &result)
+		fmt.Println(result)
 	}
 
 	return
