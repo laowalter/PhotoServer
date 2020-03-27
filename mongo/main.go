@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"time"
 
+	"github.com/photoServer/global"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -15,13 +17,20 @@ func main() {
 	database, collection, uri := "album", "pic", "mongodb://localhost:27017"
 	db, _ := connectToDB(uri, database)
 	col := db.Collection(collection)
-	getYearList(col)
+	result, err := getYearList(col)
+	if err != nil {
+		panic(err)
+	}
+	for _, v := range result {
+		fmt.Println(v)
+	}
+
 }
 
-func getYearList(col *mongo.Collection) {
-	//ctx, cancel := context.WithTimeout(context.Background(), 200*time.Second)
-	//defer cancel()
-	ctx := context.TODO()
+func getYearList(col *mongo.Collection) ([]*global.YearCount, error) {
+	var yearCount []*global.YearCount
+	ctx, cancel := context.WithTimeout(context.Background(), 200*time.Second)
+	defer cancel()
 	/*
 		db.pic.aggregate({$group:
 			{ _id:   {year:{$year:"$createtime"}},
@@ -39,29 +48,33 @@ func getYearList(col *mongo.Collection) {
 	cursor, err := col.Aggregate(ctx, pipeline)
 	if err != nil {
 		fmt.Println("Aggregate Error", err)
-		return
+		return yearCount, err
 
 	}
 	defer cursor.Close(ctx)
-
 	/*
 		var result []bson.M
 		cursor.All(ctx, &result)
 		fmt.Println(result)
 		//output: map[_id:map[year:2019] counter:1]
 	*/
-	for cursor.Next(ctx) {
-		var result bson.M
 
-		if err := cursor.Decode(&result); err != nil {
+	for cursor.Next(ctx) {
+		var _result bson.M
+		if err := cursor.Decode(&_result); err != nil {
 			fmt.Println("Can not decode Aggregate result")
 		}
-		fmt.Printf("%v, %T\n", result["_id"], result["_id"])
-		year := result["_id"].(primitive.M)
-		fmt.Println(year["year"])
+		_year := _result["_id"].(primitive.M)
+		year := _year["year"].(int32)
+		number := _result["counter"].(int32)
+		data := &global.YearCount{
+			Year:   year,
+			Number: number,
+		}
+		fmt.Println(data)
+		yearCount = append(yearCount, data)
 	}
-
-	return
+	return yearCount, nil
 }
 
 func connectToDB(uri, dbname string) (*mongo.Database, error) {
