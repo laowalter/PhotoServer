@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -21,7 +22,6 @@ func getYearList(col *mongo.Collection) {
 	//ctx, cancel := context.WithTimeout(context.Background(), 200*time.Second)
 	//defer cancel()
 	ctx := context.TODO()
-
 	/*
 		db.pic.aggregate({$group:
 			{ _id:   {year:{$year:"$createtime"}},
@@ -44,18 +44,23 @@ func getYearList(col *mongo.Collection) {
 	}
 	defer cursor.Close(ctx)
 
+	/*
+		var result []bson.M
+		cursor.All(ctx, &result)
+		fmt.Println(result)
+		//output: map[_id:map[year:2019] counter:1]
+	*/
 	for cursor.Next(ctx) {
 		var result bson.M
+
 		if err := cursor.Decode(&result); err != nil {
 			fmt.Println("Can not decode Aggregate result")
 		}
-		for k, v := range result {
-			fmt.Println(k)
-			fmt.Println(v)
-
-		}
-
+		fmt.Printf("%v, %T\n", result["_id"], result["_id"])
+		year := result["_id"].(primitive.M)
+		fmt.Println(year["year"])
 	}
+
 	return
 }
 
