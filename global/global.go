@@ -43,6 +43,11 @@ type GPSPosition struct {
 	Longitude string
 }
 
+type YearCount struct {
+	Year   int32 //return from mongodb was int32 origial
+	Number int32
+}
+
 func VIDEO() []string {
 	return []string{".mp4", ".mov", ".avi"}
 }
