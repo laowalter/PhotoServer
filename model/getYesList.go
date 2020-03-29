@@ -10,22 +10,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-/*
-func main() {
-	database, collection, uri := "album", "pic", "mongodb://localhost:27017"
-	db, _ := connectToDB(uri, database)
-	col := db.Collection(collection)
-	result, err := getYearList(col)
-	if err != nil {
-		panic(err)
-	}
-	for _, v := range result {
-		fmt.Println(v)
-	}
-
-}
-*/
-
 func GetYearList() ([]*global.YearCount, error) {
 	var yearCount []*global.YearCount
 	database, collection, uri := "album", "pic", "mongodb://localhost:27017"

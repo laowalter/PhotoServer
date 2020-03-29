@@ -20,25 +20,24 @@ func main() {
 	tmpl := iris.HTML("./views", ".html")
 	app.RegisterView(tmpl)
 
-	mvc.Configure(app.Party("/basic"), basicMVC)
-
+	mvc.Configure(app.Party("/"), MVC)
 	app.Run(iris.Addr(":8080"))
 }
 
-type basicController struct {
+type Controller struct {
 }
 
-func basicMVC(app *mvc.Application) {
+func MVC(app *mvc.Application) {
 	app.Router.Use(func(ctx iris.Context) {
 		ctx.Application().Logger().Infof("Path: %s", ctx.Path())
 		ctx.Next()
 	})
 
-	app.Handle(new(basicController))
+	app.Handle(new(Controller))
 
 }
 
-func (c *basicController) Get() mvc.Result {
+func (c *Controller) Get() mvc.Result {
 	YearList, err := model.GetYearList()
 	if err != nil {
 		fmt.Println("Can not Get Year List")
@@ -55,7 +54,15 @@ func (c *basicController) Get() mvc.Result {
 	}
 }
 
-func (c *basicController) GetHosts() string {
-	body := fmt.Sprintf("Hello visits from you: %d", 1)
-	return body
+//func (c *Controller) GetYear() mvc.Result {
+func (c *Controller) GetYear() mvc.Result {
+	year := 2018
+	yearPic, err := model.GetThumbByYear(year)
+	if err != nil {
+		fmt.Println("Finding all thumbnail by year")
+	}
+	return mvc.View{
+		Name: "index.html",
+		Data: iris.Map{"thumb": yearPic},
+	}
 }
