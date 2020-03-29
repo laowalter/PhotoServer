@@ -55,8 +55,8 @@ func (c *Controller) Get() mvc.Result {
 }
 
 //func (c *Controller) GetYear() mvc.Result {
-func (c *Controller) GetYear() mvc.Result {
-	year := 2018
+func (c *Controller) GetBy(year int) mvc.Result {
+	fmt.Println(year)
 	yearPic, err := model.GetThumbByYear(year)
 	if err != nil {
 		fmt.Println("Finding all thumbnail by year")
