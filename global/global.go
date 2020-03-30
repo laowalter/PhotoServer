@@ -21,7 +21,6 @@ type Document struct { //mongodb Database: album, collection: pic
 	Md5         string `bson:"md5"`
 	GPSPosition `bson:"inline, omitempty"`
 	Exif        `bson:"inline, omitempty"`
-	Tags        []string  `bson:"tags, omitempty"`
 	ImportTime  time.Time `bson:"import_at"`
 }
 
