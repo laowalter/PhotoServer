@@ -14,7 +14,6 @@ import (
 	"fmt"
 	"image/jpeg"
 	"io"
-	"log"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -103,15 +102,18 @@ func insert(files []string) error {
 			FileName:    filepath.Base(file),
 			Path:        file,
 			ContentType: "jpeg",
-			Thumbnail:   thumb(file),
 			ImportTime:  time.Now(),
 		}
 
 		var err error
+		document.Thumbnail, err = thumb(file)
+		if err != nil {
+			continue
+		}
+
 		document.Md5, err = fileMd5(document.Path)
 		if err != nil {
-			fmt.Println("Md5 Error", document.Path)
-			os.Exit(1)
+			continue
 		}
 
 		document.Exif, document.GPSPosition = exif(file)
@@ -122,7 +124,8 @@ func insert(files []string) error {
 			filter := bson.M{"md5": document.Md5}
 			count, err := col.CountDocuments(context.TODO(), filter)
 			if err != nil {
-				log.Fatal(err)
+				fmt.Println("Can not search by Md5")
+				return err
 			}
 			if count >= 1 {
 				update := bson.M{"$set": bson.M{"filename": document.FileName, "path": document.Path}}
@@ -135,7 +138,6 @@ func insert(files []string) error {
 
 		} else {
 			fmt.Printf("%s %v", Green("Inserted"), document.FileName)
-
 		}
 		_elapseTime = time.Since(start)
 		elapseTime := int64(_elapseTime) / int64(index+1) * int64(total-index-1)
@@ -168,10 +170,13 @@ func exif(file string) (global.Exif, global.GPSPosition) {
 			switch k {
 			case "CreateDate":
 				_cDate := fmt.Sprintf("%v", v)
+
+				exifInfo.CreateTime, err = time.Parse("2006:01:02 15:04:05", _cDate)
 				if err != nil {
 					fmt.Printf("%s, Cannot convert %s of %v\n", Red("Opps!"), Red("CreateDate"), file)
+					exifInfo.CreateTime = time.Now()
 				}
-				exifInfo.CreateTime, err = time.Parse("2006:01:02 15:04:05", _cDate)
+
 			case "Make":
 				exifInfo.Make = fmt.Sprintf("%v", v)
 			case "Model":
@@ -194,8 +199,6 @@ func exif(file string) (global.Exif, global.GPSPosition) {
 				_gpsPosition := fmt.Sprintf("%v", v)
 				gps := strings.Split(_gpsPosition, ",")
 				gpsInfo.Latitude, gpsInfo.Longitude = gps[0], gps[1]
-			default:
-				exifInfo.CreateTime = time.Now() //对于没有createtime的图片暂时当成最新的图片
 			}
 		}
 
@@ -203,11 +206,12 @@ func exif(file string) (global.Exif, global.GPSPosition) {
 	return exifInfo, gpsInfo
 }
 
-func thumb(file string) string { //file: wholepath contains filename.
+func thumb(file string) (string, error) { //file: wholepath contains filename.
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	img, err := imaging.Open(file, imaging.AutoOrientation(true))
 	if err != nil {
-		panic(err)
+		fmt.Printf("File: %s Can not open\n", file)
+		return "", err
 	}
 
 	rectangle := img.Bounds()
@@ -217,9 +221,10 @@ func thumb(file string) string { //file: wholepath contains filename.
 	buf := new(bytes.Buffer)
 	err = jpeg.Encode(buf, thumb, nil)
 	if err != nil {
-		panic(err)
+		fmt.Printf("jpeg Encode error on %s\n", file)
+		return "", err
 	}
-	return base64.StdEncoding.EncodeToString(buf.Bytes())
+	return base64.StdEncoding.EncodeToString(buf.Bytes()), nil
 }
 
 func fileMd5(filePath string) (string, error) {

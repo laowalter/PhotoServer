@@ -11,6 +11,9 @@ const (
 
 	//Fixed Thubnail height
 	ThumbnailHeight = 250
+
+	//Photos Per Page
+	PhotosPerPage = int64(100)
 )
 
 type Document struct { //mongodb Database: album, collection: pic

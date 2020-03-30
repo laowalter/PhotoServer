@@ -46,10 +46,11 @@ func (c *RootController) Get() mvc.Result {
 		fmt.Println("Can not Get Year List")
 	}
 
-	PicList, err := model.GetThumbList()
+	PicList, err := model.GetThumbList(int64(1))
 	if err != nil {
 		fmt.Println("Can not Get Thumbnail List")
 	}
+	fmt.Printf("Total photo is :%v \n", len(PicList))
 
 	return mvc.View{
 		Name: "index.html",
@@ -58,8 +59,7 @@ func (c *RootController) Get() mvc.Result {
 }
 
 func (c *RootController) GetBy(year int) mvc.Result {
-	fmt.Println(year)
-	yearPic, err := model.GetThumbByYear(year)
+	yearPic, err := model.GetThumbByYear(year, int64(1))
 	if err != nil {
 		fmt.Println("Finding all thumbnail by year")
 	}
@@ -68,7 +68,6 @@ func (c *RootController) GetBy(year int) mvc.Result {
 	if err != nil {
 		fmt.Println("Can not Get Year List")
 	}
-	fmt.Println(YearList)
 
 	return mvc.View{
 		Name: "index.html",

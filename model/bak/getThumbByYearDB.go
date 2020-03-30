@@ -9,11 +9,9 @@ import (
 
 	"github.com/photoServer/global"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func GetThumbList(pageNumber int64) ([]global.Document, error) {
-
+func GetThumbByYear(year int) ([]global.Document, error) {
 	database, collection, uri := "album", "pic", "mongodb://localhost:27017"
 	db, _ := connectToDB(uri, database)
 	col := db.Collection(collection)
@@ -22,15 +20,17 @@ func GetThumbList(pageNumber int64) ([]global.Document, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 200*time.Second)
 	defer cancel()
 
-	var opt options.FindOptions
-	filter := bson.D{}
-	cursor, err := col.Find(
-		ctx,
-		filter,
-		opt.SetSkip((pageNumber-1)*global.PhotosPerPage),
-		opt.SetLimit(global.PhotosPerPage),
-	)
+	fromDate := time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC)
+	toDate := time.Date(year+1, time.January, 1, 0, 0, 0, 0, time.UTC)
 
+	filter := bson.M{
+		"createtime": bson.M{
+			"$gt": fromDate,
+			"$lt": toDate,
+		},
+	}
+
+	cursor, err := col.Find(ctx, filter)
 	if err != nil {
 		fmt.Println("Finding all documents ERROR:", err)
 		defer cursor.Close(ctx)
