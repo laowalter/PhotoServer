@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/base64"
 	"fmt"
 
 	"github.com/kataras/iris"
@@ -20,24 +21,26 @@ func main() {
 	tmpl := iris.HTML("./views", ".html")
 	app.RegisterView(tmpl)
 
-	mvc.Configure(app.Party("/"), MVC)
+	mvc.Configure(app.Party("/"), rootMVC)
+	mvc.Configure(app.Party("/photo"), photoMVC)
+
 	app.Run(iris.Addr(":8080"))
 }
 
-type Controller struct {
-}
+type RootController struct{}
 
-func MVC(app *mvc.Application) {
+type PhotoController struct{}
+
+func rootMVC(app *mvc.Application) {
 	app.Router.Use(func(ctx iris.Context) {
 		ctx.Application().Logger().Infof("Path: %s", ctx.Path())
 		ctx.Next()
 	})
 
-	app.Handle(new(Controller))
-
+	app.Handle(new(RootController))
 }
 
-func (c *Controller) Get() mvc.Result {
+func (c *RootController) Get() mvc.Result {
 	YearList, err := model.GetYearList()
 	if err != nil {
 		fmt.Println("Can not Get Year List")
@@ -54,15 +57,43 @@ func (c *Controller) Get() mvc.Result {
 	}
 }
 
-//func (c *Controller) GetYear() mvc.Result {
-func (c *Controller) GetBy(year int) mvc.Result {
+func (c *RootController) GetBy(year int) mvc.Result {
 	fmt.Println(year)
 	yearPic, err := model.GetThumbByYear(year)
 	if err != nil {
 		fmt.Println("Finding all thumbnail by year")
 	}
+
+	YearList, err := model.GetYearList()
+	if err != nil {
+		fmt.Println("Can not Get Year List")
+	}
+	fmt.Println(YearList)
+
 	return mvc.View{
 		Name: "index.html",
-		Data: iris.Map{"thumb": yearPic},
+		Data: iris.Map{"thumb": yearPic, "years": YearList},
+	}
+}
+
+func photoMVC(app *mvc.Application) {
+	app.Router.Use(func(ctx iris.Context) {
+		ctx.Application().Logger().Infof("Path: %s", ctx.Path())
+		ctx.Next()
+	})
+	app.Handle(new(PhotoController))
+}
+
+func (c *PhotoController) GetBy(path string) mvc.Result { //http://192.168.0.199:8080/photo/1980
+	pathByte, err := base64.StdEncoding.DecodeString(path)
+	if err != nil {
+		panic(err)
+	}
+	path = string(pathByte)
+	OriginalPic := model.GenOriginalPicBase64(path)
+
+	return mvc.View{
+		Name: "originalPic.html",
+		Data: iris.Map{"thumb": OriginalPic},
 	}
 }

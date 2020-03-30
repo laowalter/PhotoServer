@@ -16,7 +16,10 @@
         </div>
         <div>
         {{range $index, $elem := .thumb }}
+        <!--
             <a href="/photo/{{.Path}}">
+        -->
+            <a href="/photo/{{$elem.Path}}">
             <img src="data:image/jpeg;base64,{{$elem.Thumbnail}}" />
             </a>
         {{end}}
@@ -25,7 +28,7 @@
     <div id="sidebar">
         <h3>Photo List</h3>
         {{range $index, $elem := .years }}
-            <a href="/year/{{$elem.Year}}">
+            <a href="/{{$elem.Year}}">
             <p>{{$elem.Year}} - ({{$elem.Number}})</p> 
             </a>
         {{end}}
