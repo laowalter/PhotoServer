@@ -5,15 +5,11 @@ import (
 )
 
 const (
-	// Used in picupdate.go remove the wholepath
-	// webserver/main.go /photo/roots
-	PhotoRootBase = "/data/album"
-
 	//Fixed Thubnail height
 	ThumbnailHeight = 250
 
 	//Photos Per Page
-	PhotosPerPage = int64(100)
+	PhotosPerPage = int64(100var opt options.FindOptions)
 )
 
 type Document struct { //mongodb Database: album, collection: pic
