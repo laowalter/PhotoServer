@@ -16,9 +16,6 @@
         </div>
         <div>
         {{range $index, $elem := .thumb }}
-        <!--
-            <a href="/photo/{{.Path}}">
-        -->
             <a href="/photo/{{$elem.Path}}">
             <img src="data:image/jpeg;base64,{{$elem.Thumbnail}}" />
             </a>

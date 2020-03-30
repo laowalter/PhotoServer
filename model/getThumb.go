@@ -11,7 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func GetThumbByYear(year int, pageNumber int64) ([]global.Document, error) {
+func GetThumbByYear(year int, pageNumber int64) ([]global.Document, int64, error) {
 
 	fromDate := time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC)
 	toDate := time.Date(year+1, time.January, 1, 0, 0, 0, 0, time.UTC)
@@ -23,33 +23,46 @@ func GetThumbByYear(year int, pageNumber int64) ([]global.Document, error) {
 		},
 	}
 	var documentList []global.Document
-	documentList, err := getDocument(filter, pageNumber)
+	documentList, totalPages, err := getDocument(filter, pageNumber)
 	if err != nil {
-		return documentList, err
+		return documentList, 0, err
 	}
-	return documentList, nil
+	return documentList, totalPages, nil
 }
 
-func GetThumbList(pageNumber int64) ([]global.Document, error) {
+func GetThumbList(pageNumber int64) ([]global.Document, int64, error) {
 	var documentList []global.Document
 	filter := bson.M{}
-	documentList, err := getDocument(filter, pageNumber)
+	documentList, totalPages, err := getDocument(filter, pageNumber)
 	if err != nil {
-		return documentList, err
+		return documentList, 0, err
 	}
-	return documentList, nil
+	return documentList, totalPages, nil
 
 }
 
-func getDocument(filter bson.M, pageNumber int64) ([]global.Document, error) {
+func getDocument(filter bson.M, pageNumber int64) ([]global.Document, int64, error) {
+	var documentList []global.Document
+	var totalPages int64
+
 	database, collection, uri := "album", "pic", "mongodb://localhost:27017"
 	db, _ := connectToDB(uri, database)
 	col := db.Collection(collection)
-
 	ctx, cancel := context.WithTimeout(context.Background(), 200*time.Second)
 	defer cancel()
 
-	var documentList []global.Document
+	totalDocumentNumbers, err := col.CountDocuments(ctx, filter)
+	if n := totalDocumentNumbers / global.PhotosPerPage; n == 1 {
+		totalPages = int64(n) + 1
+	} else {
+		totalPages = int64(n)
+	}
+
+	fmt.Printf("Total Documents Number: %v", totalDocumentNumbers)
+	if err != nil {
+		fmt.Println("Database Problem")
+		return documentList, totalPages, err
+	}
 
 	var opt options.FindOptions
 	cursor, err := col.Find(
@@ -58,17 +71,19 @@ func getDocument(filter bson.M, pageNumber int64) ([]global.Document, error) {
 		opt.SetSkip((pageNumber-1)*global.PhotosPerPage),
 		opt.SetLimit(global.PhotosPerPage),
 	)
+
 	if err != nil {
 		fmt.Println("Finding all documents ERROR:", err)
 		defer cursor.Close(ctx)
-		return documentList, err
+		return documentList, totalPages, err
+
 	} else {
 		for cursor.Next(ctx) {
 			var document global.Document
 			err := cursor.Decode(&document)
 			if err != nil {
 				fmt.Println("cursor.Next() error:", err)
-				return documentList, err
+				return documentList, pageNumber, err
 			}
 
 			//Encode pic path with base64 for iris url param get()
@@ -77,5 +92,5 @@ func getDocument(filter bson.M, pageNumber int64) ([]global.Document, error) {
 		}
 	}
 
-	return documentList, nil
+	return documentList, totalPages, nil
 }

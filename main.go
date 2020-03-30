@@ -6,10 +6,13 @@ import (
 
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/middleware/recover"
+	"github.com/photoServer/global"
 	"github.com/photoServer/model"
 
 	"github.com/kataras/iris/mvc"
 )
+
+var GlobalYearList []*global.YearCount
 
 func main() {
 	app := iris.New()
@@ -42,36 +45,37 @@ func rootMVC(app *mvc.Application) {
 
 func (c *RootController) Get() mvc.Result {
 	YearList, err := model.GetYearList()
+	GlobalYearList = YearList
+
 	if err != nil {
 		fmt.Println("Can not Get Year List")
 	}
 
-	PicList, err := model.GetThumbList(int64(1))
+	PicList, totalPages, err := model.GetThumbList(int64(1))
 	if err != nil {
 		fmt.Println("Can not Get Thumbnail List")
 	}
-	fmt.Printf("Total photo is :%v \n", len(PicList))
 
 	return mvc.View{
 		Name: "index.html",
-		Data: iris.Map{"years": YearList, "thumb": PicList},
+		Data: iris.Map{"years": YearList, "thumb": PicList, "totalpages": totalPages},
 	}
 }
 
 func (c *RootController) GetBy(year int) mvc.Result {
-	yearPic, err := model.GetThumbByYear(year, int64(1))
+	yearPic, totalPages, err := model.GetThumbByYear(year, int64(1))
 	if err != nil {
 		fmt.Println("Finding all thumbnail by year")
 	}
-
-	YearList, err := model.GetYearList()
-	if err != nil {
-		fmt.Println("Can not Get Year List")
-	}
-
+	/*
+		YearList, err := model.GetYearList()
+		if err != nil {
+			fmt.Println("Can not Get Year List")
+		}
+	*/
 	return mvc.View{
 		Name: "index.html",
-		Data: iris.Map{"thumb": yearPic, "years": YearList},
+		Data: iris.Map{"years": GlobalYearList, "thumb": yearPic, "totalpages": totalPages},
 	}
 }
 

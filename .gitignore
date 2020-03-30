@@ -10,3 +10,4 @@ testData/*
 *.BMP
 *.tiff
 *.TIFF
+tmp/*
