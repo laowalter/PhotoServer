@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/photoServer/global"
@@ -13,14 +12,6 @@ import (
 )
 
 func GetThumbByYear(year int, pageNumber int64) ([]global.Document, error) {
-
-	database, collection, uri := "album", "pic", "mongodb://localhost:27017"
-	db, _ := connectToDB(uri, database)
-	col := db.Collection(collection)
-
-	var documentList []global.Document
-	ctx, cancel := context.WithTimeout(context.Background(), 200*time.Second)
-	defer cancel()
 
 	fromDate := time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC)
 	toDate := time.Date(year+1, time.January, 1, 0, 0, 0, 0, time.UTC)
@@ -31,6 +22,34 @@ func GetThumbByYear(year int, pageNumber int64) ([]global.Document, error) {
 			"$lt": toDate,
 		},
 	}
+	var documentList []global.Document
+	documentList, err := getDocument(filter, pageNumber)
+	if err != nil {
+		return documentList, err
+	}
+	return documentList, nil
+}
+
+func GetThumbList(pageNumber int64) ([]global.Document, error) {
+	var documentList []global.Document
+	filter := bson.M{}
+	documentList, err := getDocument(filter, pageNumber)
+	if err != nil {
+		return documentList, err
+	}
+	return documentList, nil
+
+}
+
+func getDocument(filter bson.M, pageNumber int64) ([]global.Document, error) {
+	database, collection, uri := "album", "pic", "mongodb://localhost:27017"
+	db, _ := connectToDB(uri, database)
+	col := db.Collection(collection)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 200*time.Second)
+	defer cancel()
+
+	var documentList []global.Document
 
 	var opt options.FindOptions
 	cursor, err := col.Find(
@@ -49,7 +68,7 @@ func GetThumbByYear(year int, pageNumber int64) ([]global.Document, error) {
 			err := cursor.Decode(&document)
 			if err != nil {
 				fmt.Println("cursor.Next() error:", err)
-				os.Exit(1)
+				return documentList, err
 			}
 
 			//Encode pic path with base64 for iris url param get()

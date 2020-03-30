@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func GetThumbList(pageNumber int64) ([]global.Document, error) {
+func _GetThumbList(pageNumber int64) ([]global.Document, error) {
 
 	database, collection, uri := "album", "pic", "mongodb://localhost:27017"
 	db, _ := connectToDB(uri, database)
