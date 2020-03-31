@@ -47,6 +47,27 @@ func QueryAllPhotos(pageNumber int64) ([]global.Document, int64, error) {
 
 }
 
+func CountDocumentsPages() int64 {
+	var totalPages int64
+	filter := bson.M{}
+	database, collection, uri := "album", "pic", "mongodb://localhost:27017"
+	db, _ := connectToDB(uri, database)
+	col := db.Collection(collection)
+	ctx, cancel := context.WithTimeout(context.Background(), 200*time.Second)
+	defer cancel()
+	totalNumbers, err := col.CountDocuments(ctx, filter)
+	if err != nil {
+		fmt.Println("CountDocument() error")
+		return 0
+	}
+	if n := totalNumbers / global.PhotosPerPage; n == 1 {
+		totalPages = int64(n) + 1
+	} else {
+		totalPages = int64(n)
+	}
+	return totalPages
+}
+
 func getDocument(filter bson.M, pageNumber int64) ([]global.Document, int64, error) {
 	//分页查询：
 	//按照filter查询数据库，将查询结果按照 global包定义的全局变量global.PhotosPerPage
@@ -62,14 +83,14 @@ func getDocument(filter bson.M, pageNumber int64) ([]global.Document, int64, err
 	ctx, cancel := context.WithTimeout(context.Background(), 200*time.Second)
 	defer cancel()
 
-	totalDocumentNumbers, err := col.CountDocuments(ctx, filter)
-	if n := totalDocumentNumbers / global.PhotosPerPage; n == 1 {
+	totalNumbers, err := col.CountDocuments(ctx, filter)
+	if n := totalNumbers / global.PhotosPerPage; n == 1 {
 		totalPages = int64(n) + 1
 	} else {
 		totalPages = int64(n)
 	}
 
-	fmt.Printf("Total Documents Number: %v", totalDocumentNumbers)
+	fmt.Printf("Total Documents Number: %v", totalNumbers)
 	if err != nil {
 		fmt.Println("Database Problem")
 		return documentList, totalPages, err

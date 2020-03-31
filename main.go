@@ -66,7 +66,12 @@ func (c *RootController) Get() mvc.Result {
 
 	return mvc.View{
 		Name: "index.html",
-		Data: iris.Map{"years": YearList, "thumb": picList, "totalpages": totalPages, "pagers": pagers},
+		Data: iris.Map{
+			"years":      YearList,
+			"thumb":      picList,
+			"totalpages": totalPages,
+			"pagers":     pagers,
+		},
 	}
 }
 
@@ -89,7 +94,12 @@ func (c *RootController) GetBy(year int) mvc.Result {
 	//pagers := util.Pagers(currentPage, totalPages)
 	return mvc.View{
 		Name: "index.html",
-		Data: iris.Map{"years": GlobalYearList, "thumb": yearPic, "totalpages": totalPages},
+		Data: iris.Map{
+			"years":       GlobalYearList,
+			"thumb":       yearPic,
+			"totalpages":  totalPages,
+			"currentYear": year,
+		},
 	}
 }
 

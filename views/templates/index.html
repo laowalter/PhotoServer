@@ -23,11 +23,11 @@
         </div>
         <div>
             {{range $index, $value := .pagers.Before}}
-            <li><a href="{{$value}}">{{$value}}</a> </li>
+            <li><a href="?page={{$value}}">{{$value}}</a> </li>
             {{end}}
             <li><span style="color:red">{{ .pagers.Current }}</span></li>
             {{range $index, $value := .pagers.After}}
-            <li><a href="{{$value}}">{{$value}}</a></li>
+            <li><a href="?page={{$value}}">{{$value}}</a></li>
             {{end}}
         </div>
     </div>
