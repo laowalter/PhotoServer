@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/base64"
 	"fmt"
+	"math/rand"
 
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/middleware/recover"
@@ -52,7 +53,8 @@ func (c *RootController) Get() mvc.Result {
 		fmt.Println("Can not Get Year List")
 	}
 
-	currentPage := int64(11) //can random current page:w
+	totalPages := model.CountDocumentsPages() / global.PhotosPerPage
+	currentPage := rand.Int63n(totalPages) //can random current page:w
 
 	picList, totalPages, err := model.QueryAllPhotos(currentPage)
 	if err != nil {
@@ -73,12 +75,13 @@ func (c *RootController) GetBy(year int) mvc.Result {
 	if err != nil {
 		fmt.Println("Finding all thumbnail by year")
 	}
+
+	//pagers := util.Pagers(currentPage, totalPages)
 	return mvc.View{
 		Name: "index.html",
-		Data: iris.Map{"years": GlobalYearList, "thumb": yearPic, "totalpages": totalPages},
+		Data: iris.Map{"years": GlobalYearList, "thumb": yearPic, "totalpages": totalPages, "pagers": pagers},
 	}
 }
-
 func photoMVC(app *mvc.Application) {
 	//用来处理 localhost:8080/photo的MVC
 	app.Router.Use(func(ctx iris.Context) {
