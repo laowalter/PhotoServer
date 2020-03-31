@@ -1,3 +1,0 @@
-# github.com/photoServer
-./main.go:54:11: totalPages declared but not used
-./main.go:66:11: totalPages declared but not used

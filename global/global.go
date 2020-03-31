@@ -41,6 +41,12 @@ type GPSPosition struct {
 	Longitude string
 }
 
+type Pagers struct {
+	Before  []int64
+	Current int64
+	After   []int64
+}
+
 type YearCount struct {
 	Year   int32 //return from mongodb was int32 origial
 	Number int32

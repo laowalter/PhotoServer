@@ -11,7 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func GetThumbByYear(year int, pageNumber int64) ([]global.Document, int64, error) {
+func GetThumbByYear(year int, pageNumber int64) ([]global.Document, int64, error) { //documentlist, the total pages if onepage per global.photosPer.Page
 
 	fromDate := time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC)
 	toDate := time.Date(year+1, time.January, 1, 0, 0, 0, 0, time.UTC)

@@ -8,6 +8,7 @@ import (
 	"github.com/kataras/iris/middleware/recover"
 	"github.com/photoServer/global"
 	"github.com/photoServer/model"
+	"github.com/photoServer/views/util"
 
 	"github.com/kataras/iris/mvc"
 )
@@ -21,7 +22,7 @@ func main() {
 
 	app.HandleDir("/static", "./assets")
 
-	tmpl := iris.HTML("./views", ".html")
+	tmpl := iris.HTML("./views/templates", ".html")
 	app.RegisterView(tmpl)
 
 	mvc.Configure(app.Party("/"), rootMVC)
@@ -51,14 +52,16 @@ func (c *RootController) Get() mvc.Result {
 		fmt.Println("Can not Get Year List")
 	}
 
-	PicList, totalPages, err := model.GetThumbList(int64(1))
+	currentPage := int64(11)
+	PicList, totalPages, err := model.GetThumbList(currentPage)
 	if err != nil {
 		fmt.Println("Can not Get Thumbnail List")
 	}
+	pagers := util.Pagers(currentPage, totalPages)
 
 	return mvc.View{
 		Name: "index.html",
-		Data: iris.Map{"years": YearList, "thumb": PicList, "totalpages": totalPages},
+		Data: iris.Map{"years": YearList, "thumb": PicList, "totalpages": totalPages, "pagers": pagers},
 	}
 }
 
@@ -67,12 +70,6 @@ func (c *RootController) GetBy(year int) mvc.Result {
 	if err != nil {
 		fmt.Println("Finding all thumbnail by year")
 	}
-	/*
-		YearList, err := model.GetYearList()
-		if err != nil {
-			fmt.Println("Can not Get Year List")
-		}
-	*/
 	return mvc.View{
 		Name: "index.html",
 		Data: iris.Map{"years": GlobalYearList, "thumb": yearPic, "totalpages": totalPages},
@@ -87,7 +84,8 @@ func photoMVC(app *mvc.Application) {
 	app.Handle(new(PhotoController))
 }
 
-func (c *PhotoController) GetBy(path string) mvc.Result { //http://192.168.0.199:8080/photo/1980
+//http://192.168.0.199:8080/photo/1980
+func (c *PhotoController) GetBy(path string) mvc.Result {
 	pathByte, err := base64.StdEncoding.DecodeString(path)
 	if err != nil {
 		panic(err)
