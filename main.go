@@ -46,6 +46,7 @@ func rootMVC(app *mvc.Application) {
 }
 
 func (c *RootController) Get() mvc.Result {
+
 	YearList, err := model.GetYearList()
 	GlobalYearList = YearList
 
@@ -69,6 +70,15 @@ func (c *RootController) Get() mvc.Result {
 	}
 }
 
+//http://192.168.0.199:8080/page?year=1980&page=23
+func (c *RootController) GetPage(ctx iris.Context) mvc.Result {
+	fmt.Printf("FullURL: %s\n", ctx.URLParam("year"))
+	fmt.Printf("FullURL: %s\n", ctx.URLParam("page"))
+	fmt.Println("-------------------------")
+
+	return mvc.View{}
+}
+
 func (c *RootController) GetBy(year int) mvc.Result {
 	//处理localhost:8080/2019的控制器
 	yearPic, totalPages, err := model.QueryPhotosByYear(year, int64(1))
@@ -79,9 +89,10 @@ func (c *RootController) GetBy(year int) mvc.Result {
 	//pagers := util.Pagers(currentPage, totalPages)
 	return mvc.View{
 		Name: "index.html",
-		Data: iris.Map{"years": GlobalYearList, "thumb": yearPic, "totalpages": totalPages, "pagers": pagers},
+		Data: iris.Map{"years": GlobalYearList, "thumb": yearPic, "totalpages": totalPages},
 	}
 }
+
 func photoMVC(app *mvc.Application) {
 	//用来处理 localhost:8080/photo的MVC
 	app.Router.Use(func(ctx iris.Context) {
