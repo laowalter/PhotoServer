@@ -52,21 +52,24 @@ func (c *RootController) Get() mvc.Result {
 		fmt.Println("Can not Get Year List")
 	}
 
-	currentPage := int64(11)
-	PicList, totalPages, err := model.GetThumbList(currentPage)
+	currentPage := int64(11) //can random current page:w
+
+	picList, totalPages, err := model.QueryAllPhotos(currentPage)
 	if err != nil {
 		fmt.Println("Can not Get Thumbnail List")
 	}
+
 	pagers := util.Pagers(currentPage, totalPages)
 
 	return mvc.View{
 		Name: "index.html",
-		Data: iris.Map{"years": YearList, "thumb": PicList, "totalpages": totalPages, "pagers": pagers},
+		Data: iris.Map{"years": YearList, "thumb": picList, "totalpages": totalPages, "pagers": pagers},
 	}
 }
 
 func (c *RootController) GetBy(year int) mvc.Result {
-	yearPic, totalPages, err := model.GetThumbByYear(year, int64(1))
+	//处理localhost:8080/2019的控制器
+	yearPic, totalPages, err := model.QueryPhotosByYear(year, int64(1))
 	if err != nil {
 		fmt.Println("Finding all thumbnail by year")
 	}
@@ -77,6 +80,7 @@ func (c *RootController) GetBy(year int) mvc.Result {
 }
 
 func photoMVC(app *mvc.Application) {
+	//用来处理 localhost:8080/photo的MVC
 	app.Router.Use(func(ctx iris.Context) {
 		ctx.Application().Logger().Infof("Path: %s", ctx.Path())
 		ctx.Next()
@@ -84,8 +88,12 @@ func photoMVC(app *mvc.Application) {
 	app.Handle(new(PhotoController))
 }
 
-//http://192.168.0.199:8080/photo/1980
 func (c *PhotoController) GetBy(path string) mvc.Result {
+	//显示图片的原始文件
+	//通过GetBy获得thumb图片对应的href中的原图对应的全路径(path)
+	//这个全路径为了能在url中通过GetBy获得，已经将path(如/data/1.jpg)
+	//进行了base64转换。现在需要先decode回来。
+
 	pathByte, err := base64.StdEncoding.DecodeString(path)
 	if err != nil {
 		panic(err)
