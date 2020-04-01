@@ -45,17 +45,19 @@ func rootMVC(app *mvc.Application) {
 	app.Handle(new(RootController))
 }
 
-func (c *RootController) Get() mvc.Result {
+func (c *RootController) Get(ctx iris.Context) mvc.Result {
+
+	currentPage, err := ctx.URLParamInt64("page")
+	if err != nil {
+		totalPages := model.CountDocumentsPages() / global.PhotosPerPage
+		currentPage = rand.Int63n(totalPages) //can random current page
+	}
 
 	YearList, err := model.GetYearList()
 	GlobalYearList = YearList
-
 	if err != nil {
 		fmt.Println("Can not Get Year List")
 	}
-
-	totalPages := model.CountDocumentsPages() / global.PhotosPerPage
-	currentPage := rand.Int63n(totalPages) //can random current page:w
 
 	picList, totalPages, err := model.QueryAllPhotos(currentPage)
 	if err != nil {
@@ -63,7 +65,6 @@ func (c *RootController) Get() mvc.Result {
 	}
 
 	pagers := util.Pagers(currentPage, totalPages)
-
 	return mvc.View{
 		Name: "index.html",
 		Data: iris.Map{
@@ -75,13 +76,34 @@ func (c *RootController) Get() mvc.Result {
 	}
 }
 
-//http://192.168.0.199:8080/page?year=1980&page=23
-func (c *RootController) GetPage(ctx iris.Context) mvc.Result {
-	fmt.Printf("FullURL: %s\n", ctx.URLParam("year"))
-	fmt.Printf("FullURL: %s\n", ctx.URLParam("page"))
-	fmt.Println("-------------------------")
+//http://192.168.0.199:8080/year?year=2019page=23
+func (c *RootController) GetYear(ctx iris.Context) mvc.Result {
+	year, err := ctx.URLParamInt("year")
+	if err != nil {
+		fmt.Println("Did not get year")
+	}
+	currentPage, err := ctx.URLParamInt64("page")
+	if err != nil {
+		fmt.Println("Did not currentPage")
+	}
+	fmt.Println(currentPage)
 
-	return mvc.View{}
+	yearPic, totalPages, err := model.QueryPhotosByYear(year, currentPage)
+	if err != nil {
+		fmt.Println("Finding all thumbnail by year")
+	}
+
+	pagers := util.Pagers(currentPage, totalPages)
+	return mvc.View{
+		Name: "index.html",
+		Data: iris.Map{
+			"years":       GlobalYearList,
+			"thumb":       yearPic,
+			"totalpages":  totalPages,
+			"currentyear": year,
+			"pagers":      pagers,
+		},
+	}
 }
 
 func (c *RootController) GetBy(year int) mvc.Result {

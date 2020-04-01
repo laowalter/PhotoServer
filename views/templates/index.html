@@ -22,19 +22,37 @@
         {{end}}
         </div>
         <div>
-            {{range $index, $value := .pagers.Before}}
-            <li><a href="?page={{$value}}">{{$value}}</a> </li>
+            {{ $thisyear := .currentyear }}
+            {{if $thisyear }} <!-- http://192.168.0.199:8080/?page=63 -->
+                <li><a href="/year?year={{$thisyear}}&page=1">First Page</a></li>
+                {{range $index, $pageNumber := .pagers.Before}}
+                    <li><a href="/year?year={{$thisyear}}&page={{$pageNumber}}">{{$pageNumber}}</a></li>
+                {{end}}
+                <li><span style="color:red">{{ .pagers.Current }}</span></li>
+                {{range $index, $pageNumber := .pagers.After}}
+                    <li><a href="/year?year={{$thisyear}}&page={{$pageNumber}}">{{$pageNumber}}</a></li>
+                {{end}}
+                <li><a href="/year?year={{$thisyear}}&page={{.totalpages}}">Last Page</a></li>
+            {{else}} <!--http://192.168.0.199:8080/year?year=2018&page=1 -->
+
+                <li><a href="?page=1">First Page</a></li>
+                {{range $index, $pageNumber := .pagers.Before}}
+                    <li><a href="?page={{$pageNumber}}">{{$pageNumber}}</a></li>
+                {{end}}
+                <li><span style="color:red">{{ .pagers.Current }}</span></li>
+                {{range $index, $pageNumber := .pagers.After}}
+                    <li><a href="?page={{$pageNumber}}">{{$pageNumber}}</a></li>
+                {{end}}
+                 <li><a href="?page={{.totalpages}}">Last Page</a></li>
+
             {{end}}
-            <li><span style="color:red">{{ .pagers.Current }}</span></li>
-            {{range $index, $value := .pagers.After}}
-            <li><a href="?page={{$value}}">{{$value}}</a></li>
-            {{end}}
+            </p>
         </div>
     </div>
     <div id="sidebar">
         <h3>Photo List</h3>
         {{range $index, $elem := .years }}
-            <a href="/{{$elem.Year}}">
+            <a href="/year?year={{$elem.Year}}&page=1">
             <p>{{$elem.Year}} - ({{$elem.Number}})</p> 
             </a>
         {{end}}
