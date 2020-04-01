@@ -37,11 +37,13 @@ func Pagers(currentPage int64, totalPages int64) global.Pagers {
 
 		}
 	}
+
+	if currentPage == int64(1) {
+		pagers.Before = []int64{}
+	}
+	if currentPage == totalPages {
+		pagers.After = []int64{}
+	}
 	pagers.Current = currentPage
-	/*
-		fmt.Println(pagers.Before)
-		fmt.Println(pagers.Current)
-		fmt.Println(pagers.After)
-	*/
 	return pagers
 }

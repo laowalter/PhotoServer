@@ -86,11 +86,10 @@ func (c *RootController) GetYear(ctx iris.Context) mvc.Result {
 	if err != nil {
 		fmt.Println("Did not currentPage")
 	}
-	fmt.Println(currentPage)
 
 	yearPic, totalPages, err := model.QueryPhotosByYear(year, currentPage)
 	if err != nil {
-		fmt.Println("Finding all thumbnail by year")
+		fmt.Println("Can not finding all thumbnail by year")
 	}
 
 	pagers := util.Pagers(currentPage, totalPages)

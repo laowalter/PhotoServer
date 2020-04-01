@@ -60,10 +60,11 @@ func CountDocumentsPages() int64 {
 		fmt.Println("CountDocument() error")
 		return 0
 	}
-	if n := totalNumbers / global.PhotosPerPage; n == 1 {
-		totalPages = int64(n) + 1
+
+	if totalNumbers%global.PhotosPerPage == 0 {
+		totalPages = totalNumbers / global.PhotosPerPage
 	} else {
-		totalPages = int64(n)
+		totalPages = totalNumbers/global.PhotosPerPage + 1
 	}
 	return totalPages
 }
@@ -84,13 +85,12 @@ func getDocument(filter bson.M, pageNumber int64) ([]global.Document, int64, err
 	defer cancel()
 
 	totalNumbers, err := col.CountDocuments(ctx, filter)
-	if n := totalNumbers / global.PhotosPerPage; n == 1 {
-		totalPages = int64(n) + 1
+	if totalNumbers%global.PhotosPerPage == 0 {
+		totalPages = totalNumbers / global.PhotosPerPage
 	} else {
-		totalPages = int64(n)
+		totalPages = totalNumbers/global.PhotosPerPage + 1
 	}
 
-	fmt.Printf("Total Documents Number: %v", totalNumbers)
 	if err != nil {
 		fmt.Println("Database Problem")
 		return documentList, totalPages, err

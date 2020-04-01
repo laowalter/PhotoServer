@@ -22,12 +22,15 @@
         {{end}}
         </div>
         <div>
+
             {{ $thisyear := .currentyear }}
             {{if $thisyear }} <!-- http://192.168.0.199:8080/?page=63 -->
                 <li><a href="/year?year={{$thisyear}}&page=1">First Page</a></li>
-                {{range $index, $pageNumber := .pagers.Before}}
+
+                    {{range $index, $pageNumber := .pagers.Before}}
                     <li><a href="/year?year={{$thisyear}}&page={{$pageNumber}}">{{$pageNumber}}</a></li>
-                {{end}}
+                    {{end}}
+
                 <li><span style="color:red">{{ .pagers.Current }}</span></li>
                 {{range $index, $pageNumber := .pagers.After}}
                     <li><a href="/year?year={{$thisyear}}&page={{$pageNumber}}">{{$pageNumber}}</a></li>
