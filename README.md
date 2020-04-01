@@ -1,3 +1,9 @@
 # PhotoServer
 
-Step by Step Learn from https://gowebexamples.com/http-server/
+Iris-go + mongodb
+
+Simple Photoserver
+
+Autogroup by exif info of photos
+
+Any Directory can be imported
