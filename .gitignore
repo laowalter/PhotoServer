@@ -11,3 +11,4 @@ testData/*
 *.tiff
 *.TIFF
 tmp/*
+tmp

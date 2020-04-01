@@ -22,6 +22,7 @@ func main() {
 	app.Logger().SetLevel("debug")
 
 	app.HandleDir("/static", "./assets")
+	app.Favicon("./assets/favicon.ico")
 
 	tmpl := iris.HTML("./views/templates", ".html")
 	app.RegisterView(tmpl)

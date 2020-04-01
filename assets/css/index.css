@@ -1,26 +1,37 @@
-#wrapper {
-  margin-left: 200px;
-}
-#content {
+#innercontent {
   float: right;
-  width: 100%;
-  background-color: #CCF;
+  width: 60%;
 }
-#sidebar {
-  float: left;
-  width: 200px;
-  margin-left: -200px;
-  background-color: #FFA;
-}
-#cleared {
-  clear: both;
+#innernavbar {
+  float:left;
+  width:10%
+} 
+#footer{
+    clear:both;
 }
 
-.center {
-    width: 50%;
-    text-align: center;
-    position: absolute;
-    left: 25%;
+#header{
+    text-align:center;
 }
 
-#responsive-image {  width: 100%;  height: auto; }
+.pagination {
+  display: inline-block;
+}
+
+.pagination a {
+  color: black;
+  float: center;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+.pagination a.active {
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 5px;
+}
+
+.pagination a:hover:not(.active) {
+  background-color: #ddd;
+  border-radius: 5px;
+}
