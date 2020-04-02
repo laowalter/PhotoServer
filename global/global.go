@@ -9,7 +9,7 @@ const (
 	ThumbnailHeight = 250
 
 	//Photos Per Page
-	PhotosPerPage = int64(10)
+	PhotosPerPage = int64(15)
 )
 
 type Document struct {
@@ -36,6 +36,7 @@ type Exif struct {
 	ExposureTime         string
 	LensSpec             string
 	LensID               string
+	FocalLength          string
 }
 
 type GPSPosition struct {

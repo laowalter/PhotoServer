@@ -15,18 +15,29 @@ func QueryPhotosByYear(year int, pageNumber int64) ([]global.Document, int64, er
 	//分页查询
 	//搜索条件: 按年查询
 	//返回第pageNumber页面中的对应的document，文档的总数
+	//早于公园1000年的时间认为是没有exif信息在照片中
 
-	fromDate := time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC)
-	toDate := time.Date(year+1, time.January, 1, 0, 0, 0, 0, time.UTC)
-
-	filter := bson.M{
-		"createtime": bson.M{
-			"$gt": fromDate,
-			"$lt": toDate,
-		},
+	var fromDate, toDate time.Time
+	var filter bson.M
+	if year != 1 {
+		fromDate = time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC)
+		toDate = time.Date(year+1, time.January, 1, 0, 0, 0, 0, time.UTC)
+		filter = bson.M{
+			"createtime": bson.M{
+				"$gt": fromDate,
+				"$lt": toDate,
+			},
+		}
+	} else {
+		toDate = time.Date(1000, time.January, 1, 0, 0, 0, 0, time.UTC)
+		filter = bson.M{
+			"createtime": bson.M{
+				"$lt": toDate,
+			},
+		}
 	}
 	var documentList []global.Document
-	documentList, totalPages, err := getDocument(filter, pageNumber)
+	documentList, totalPages, err := getMultipleDocuments(filter, pageNumber)
 	if err != nil {
 		return documentList, 0, err
 	}
@@ -39,7 +50,7 @@ func QueryAllPhotos(pageNumber int64) ([]global.Document, int64, error) {
 	//返回第pageNumber页面中的对应的document，文档的总数
 	var documentList []global.Document
 	filter := bson.M{}
-	documentList, totalPages, err := getDocument(filter, pageNumber)
+	documentList, totalPages, err := getMultipleDocuments(filter, pageNumber)
 	if err != nil {
 		return documentList, 0, err
 	}
@@ -53,7 +64,7 @@ func CountDocumentsPages() int64 {
 	database, collection, uri := "album", "pic", "mongodb://localhost:27017"
 	db, _ := connectToDB(uri, database)
 	col := db.Collection(collection)
-	ctx, cancel := context.WithTimeout(context.Background(), 200*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	totalNumbers, err := col.CountDocuments(ctx, filter)
 	if err != nil {
@@ -69,7 +80,7 @@ func CountDocumentsPages() int64 {
 	return totalPages
 }
 
-func getDocument(filter bson.M, pageNumber int64) ([]global.Document, int64, error) {
+func getMultipleDocuments(filter bson.M, pageNumber int64) ([]global.Document, int64, error) {
 	//分页查询：
 	//按照filter查询数据库，将查询结果按照 global包定义的全局变量global.PhotosPerPage
 	//进行分页，返回的是第pageNumber页面中的doucment数组，这个filter的总数，这个总数
@@ -81,7 +92,7 @@ func getDocument(filter bson.M, pageNumber int64) ([]global.Document, int64, err
 	database, collection, uri := "album", "pic", "mongodb://localhost:27017"
 	db, _ := connectToDB(uri, database)
 	col := db.Collection(collection)
-	ctx, cancel := context.WithTimeout(context.Background(), 200*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	totalNumbers, err := col.CountDocuments(ctx, filter)
@@ -123,6 +134,24 @@ func getDocument(filter bson.M, pageNumber int64) ([]global.Document, int64, err
 			documentList = append(documentList, document)
 		}
 	}
-
 	return documentList, totalPages, nil
+}
+
+func QueryPhotoByMd5(md5 string) (global.Document, error) {
+	//按照md5查询数据库，找到唯一的global.Document
+
+	var document global.Document
+
+	database, collection, uri := "album", "pic", "mongodb://localhost:27017"
+	db, _ := connectToDB(uri, database)
+	col := db.Collection(collection)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	filter := bson.M{"md5": md5}
+	err := col.FindOne(ctx, filter).Decode(&document)
+	if err != nil {
+		return document, err
+	}
+	return document, nil
 }

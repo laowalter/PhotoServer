@@ -13,7 +13,12 @@
     <div id="innercontent">
         <div class="photolist">
         {{range $index, $elem := .thumb }}
-            <a href="photo/{{$elem.PathBase64}}"><img src="data:image/jpeg;base64,{{$elem.Thumbnail}}"/></a>
+        <!--
+        <a href="large?path={{$elem.PathBase64}}&md5={{$elem.Md5}}">
+        -->
+        <a href="large?path={{$elem.PathBase64}}&md5={{$elem.Md5}}">
+                <img src="data:image/jpeg;base64,{{$elem.Thumbnail}}"/>
+            </a>
         {{end}}
         </div>
         
@@ -48,7 +53,11 @@
         <h3>Photo List</h3>
         <ul>
             {{range $index, $elem := .years }}
-            <li><a href="/year?year={{$elem.Year}}&page=1">{{$elem.Year}} - ({{$elem.Number}})</a></li>
+                {{if eq $elem.Year 1 }}
+                    <li><a href="/year?year={{$elem.Year}}&page=1">未标注时间 - ({{$elem.Number}})</a></li>
+                {{else}}
+                    <li><a href="/year?year={{$elem.Year}}&page=1">{{$elem.Year}} - ({{$elem.Number}})</a></li>
+                {{end}}
             {{end}}
         </ul>
     </div>

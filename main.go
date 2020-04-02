@@ -28,7 +28,6 @@ func main() {
 	app.RegisterView(tmpl)
 
 	mvc.Configure(app.Party("/"), rootMVC)
-	mvc.Configure(app.Party("/photo"), photoMVC)
 
 	app.Run(iris.Addr(":8080"))
 }
@@ -108,50 +107,27 @@ func (c *RootController) GetYear(ctx iris.Context) mvc.Result {
 	}
 }
 
-/*
-func (c *RootController) GetBy(year int) mvc.Result {
-	//处理localhost:8080/2019的控制器
-	yearPic, totalPages, err := model.QueryPhotosByYear(year, int64(1))
-	if err != nil {
-		fmt.Println("Finding all thumbnail by year")
-	}
-
-	//pagers := util.Pagers(currentPage, totalPages)
-	return mvc.View{
-		Name: "index.html",
-		Data: iris.Map{
-			"years":       GlobalYearList,
-			"thumb":       yearPic,
-			"totalpages":  totalPages,
-			"currentYear": year,
-		},
-	}
-}
-*/
-func photoMVC(app *mvc.Application) {
-	//用来处理 localhost:8080/photo的MVC
-	app.Router.Use(func(ctx iris.Context) {
-		ctx.Application().Logger().Infof("Path: %s", ctx.Path())
-		ctx.Next()
-	})
-	app.Handle(new(PhotoController))
-}
-
-func (c *PhotoController) GetBy(path string) mvc.Result {
-	//显示图片的原始文件
-	//通过GetBy获得thumb图片对应的href中的原图对应的全路径(path)
-	//这个全路径为了能在url中通过GetBy获得，已经将path(如/data/1.jpg)
-	//进行了base64转换。现在需要先decode回来。
-
+//http://192.168.0.199:8080/large?path=base64Enoded_real_path&md5=md5string
+func (c *RootController) GetLarge(ctx iris.Context) mvc.Result {
+	md5 := ctx.URLParam("md5")
+	path := ctx.URLParam("path")
 	pathByte, err := base64.StdEncoding.DecodeString(path)
 	if err != nil {
-		panic(err)
+		fmt.Println("Can to Decode  \"Path\" from base64.")
 	}
 	path = string(pathByte)
 	OriginalPic := model.GenOriginalPicBase64(path)
+	document, err := model.QueryPhotoByMd5(md5)
+	if err != nil {
+		fmt.Println("Can to get the Single document by md5.")
+	}
 
 	return mvc.View{
 		Name: "originalPic.html",
-		Data: iris.Map{"thumb": OriginalPic},
+		Data: iris.Map{
+			"thumb": OriginalPic,
+			"photo": document,
+		},
 	}
+
 }

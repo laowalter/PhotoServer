@@ -166,7 +166,6 @@ func exif(file string) (global.Exif, global.GPSPosition) {
 		}
 
 		for k, v := range fileInfo.Fields {
-			//fmt.Printf("key: %v, value: %v, valueType: %T\n", k, v, v)
 			switch k {
 			case "CreateDate":
 				_cDate := fmt.Sprintf("%v", v)
@@ -195,6 +194,8 @@ func exif(file string) (global.Exif, global.GPSPosition) {
 				exifInfo.Aperture = "f/" + fmt.Sprintf("%v", v)
 			case "ExposureCompensation":
 				exifInfo.ExposureCompensation = fmt.Sprintf("%v", v)
+			case "FocalLength":
+				exifInfo.FocalLength = fmt.Sprintf("%v", v)
 			case "GPSPosition":
 				_gpsPosition := fmt.Sprintf("%v", v)
 				gps := strings.Split(_gpsPosition, ",")
