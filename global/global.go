@@ -9,7 +9,7 @@ const (
 	ThumbnailHeight = 250
 
 	//Photos Per Page
-	PhotosPerPage = int64(15)
+	PhotosPerPage = int64(50)
 )
 
 type Document struct {

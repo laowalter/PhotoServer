@@ -11,20 +11,16 @@
 <div id="container">
     <div id="header">My Album</div>
     <div id="innercontent">
+        {{ $thisyear := .currentyear }}
         <div class="photolist">
         {{range $index, $elem := .thumb }}
-        <!--
-        <a href="large?path={{$elem.PathBase64}}&md5={{$elem.Md5}}">
-        -->
-        <a href="large?path={{$elem.PathBase64}}&md5={{$elem.Md5}}">
-                <img src="data:image/jpeg;base64,{{$elem.Thumbnail}}"/>
-            </a>
+        <a title="{{.Path}}" href="large?path={{$elem.PathBase64}}&md5={{$elem.Md5}}">
+                <img src="data:image/jpeg;base64,{{$elem.Thumbnail}}"/></a>
         {{end}}
         </div>
         
         <div class="centerparent">
            <div class="pagination">
-            {{ $thisyear := .currentyear }}
             {{if $thisyear }} <!-- http://192.168.0.199:8080/?page=63 -->
                 <a href="/year?year={{$thisyear}}&page=1">First Page</a>
                 {{range $index, $pageNumber := .pagers.Before}}

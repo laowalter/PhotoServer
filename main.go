@@ -34,8 +34,6 @@ func main() {
 
 type RootController struct{}
 
-type PhotoController struct{}
-
 func rootMVC(app *mvc.Application) {
 	app.Router.Use(func(ctx iris.Context) {
 		ctx.Application().Logger().Infof("Path: %s", ctx.Path())
@@ -48,6 +46,12 @@ func rootMVC(app *mvc.Application) {
 //http://192.168.0.199:8080/
 //http://192.168.0.199:8080/?page=123
 func (c *RootController) Get(ctx iris.Context) mvc.Result {
+
+	if ctx.IsMobile() {
+		fmt.Println("from mobile dev")
+	} else {
+		fmt.Println("from desktop")
+	}
 
 	currentPage, err := ctx.URLParamInt64("page")
 	if err != nil {
@@ -87,6 +91,12 @@ func (c *RootController) GetYear(ctx iris.Context) mvc.Result {
 	currentPage, err := ctx.URLParamInt64("page")
 	if err != nil {
 		fmt.Println("Did not currentPage")
+	}
+
+	YearList, err := model.GetYearList()
+	GlobalYearList = YearList
+	if err != nil {
+		fmt.Println("Can not Get Year List")
 	}
 
 	yearPic, totalPages, err := model.QueryPhotosByYear(year, currentPage)
