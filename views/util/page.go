@@ -20,7 +20,7 @@ func Pagers(currentPage int64, totalPages int64) global.Pagers {
 		}
 	} else {
 		if currentPage < int64(6) {
-			for i := int64(1); i <= currentPage; i++ {
+			for i := int64(1); i < currentPage; i++ {
 				pagers.Before = append(pagers.Before, i)
 			}
 			for i := currentPage + int64(1); i < currentPage+6 && i <= totalPages; i++ {

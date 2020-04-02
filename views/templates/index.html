@@ -4,18 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="stylesheet" href="/static/css/index.css?v=1.1">
     <title>My Album</title>
 </head>
 <body>
 <div id="container">
-    <div id="header">Top Header</div>
-<div id="content">
+    <div id="header">My Album</div>
     <div id="innercontent">
+        <div class="photolist">
         {{range $index, $elem := .thumb }}
             <a href="photo/{{$elem.PathBase64}}"><img src="data:image/jpeg;base64,{{$elem.Thumbnail}}"/></a>
         {{end}}
-        <div class="pagination">
+        </div>
+        
+        <div class="centerparent">
+           <div class="pagination">
             {{ $thisyear := .currentyear }}
             {{if $thisyear }} <!-- http://192.168.0.199:8080/?page=63 -->
                 <a href="/year?year={{$thisyear}}&page=1">First Page</a>
@@ -43,14 +46,17 @@
 </div>
 <div id="navbar">
         <h3>Photo List</h3>
-        {{range $index, $elem := .years }}
-            <a href="/year?year={{$elem.Year}}&page=1">{{$elem.Year}} - ({{$elem.Number}})</a>
-        {{end}}
+        <ul>
+            {{range $index, $elem := .years }}
+            <li><a href="/year?year={{$elem.Year}}&page=1">{{$elem.Year}} - ({{$elem.Number}})</a></li>
+            {{end}}
+        </ul>
     </div>
-</div>
 <div id="footer">
         <hr />
+        <div class="topmargin">
         Copyright (C) 2020. All rights reserved.
+        </div>
 </div>
 </body>
 </html>

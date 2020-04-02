@@ -46,6 +46,8 @@ func rootMVC(app *mvc.Application) {
 	app.Handle(new(RootController))
 }
 
+//http://192.168.0.199:8080/
+//http://192.168.0.199:8080/?page=123
 func (c *RootController) Get(ctx iris.Context) mvc.Result {
 
 	currentPage, err := ctx.URLParamInt64("page")
@@ -106,6 +108,7 @@ func (c *RootController) GetYear(ctx iris.Context) mvc.Result {
 	}
 }
 
+/*
 func (c *RootController) GetBy(year int) mvc.Result {
 	//处理localhost:8080/2019的控制器
 	yearPic, totalPages, err := model.QueryPhotosByYear(year, int64(1))
@@ -124,7 +127,7 @@ func (c *RootController) GetBy(year int) mvc.Result {
 		},
 	}
 }
-
+*/
 func photoMVC(app *mvc.Application) {
 	//用来处理 localhost:8080/photo的MVC
 	app.Router.Use(func(ctx iris.Context) {
