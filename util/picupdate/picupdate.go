@@ -200,6 +200,8 @@ func exif(file string) (global.Exif, global.GPSPosition) {
 				_gpsPosition := fmt.Sprintf("%v", v)
 				gps := strings.Split(_gpsPosition, ",")
 				gpsInfo.Latitude, gpsInfo.Longitude = gps[0], gps[1]
+			case "ImageSize":
+				exifInfo.ImageSize = fmt.Sprintf("%v", v)
 			}
 		}
 
