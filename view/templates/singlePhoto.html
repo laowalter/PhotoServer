@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/static/css/index.css?v=1.1">
+    <title>MyAlbum</title>
+</head>
+<body>
+    <div id="container">
+        <img class="imgfullscreen" src="data:image/jpeg;base64,{{.thumb}}" id="responsive-image"/>
+    </div>
+    <div id="navbar">
+        <p>文件路径: {{.photo.Path}}</p>
+        <p>拍摄时间: {{.photo.Exif.CreateTime}}</p>
+        <p>相机厂商: {{.photo.Make}}</p>
+        <p>相机型号: {{.photo.Model}}</p>
+        <p>快门速度: {{.photo.ShutterSpeed}}</p>
+        <p>ISO: {{.photo.ISO}}</p>
+        <p>光圈: {{.photo.Aperture}}</p>
+        <p>曝光补偿: {{.photo.ExposureCompensation}}</p>
+        <p>焦距: {{.photo.FocalLength}}</p>
+        <p>镜头型号: {{.photo.LensID}}</p>
+    </div>
+</body>
+</html>
