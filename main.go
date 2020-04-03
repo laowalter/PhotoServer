@@ -5,7 +5,6 @@ import (
 	"math/rand"
 
 	"github.com/kataras/iris"
-	"github.com/kataras/iris/middleware/recover"
 	"github.com/photoServer/global"
 	"github.com/photoServer/model"
 	"github.com/photoServer/view/rootview"
@@ -17,8 +16,9 @@ var GlobalYearList []*global.YearCount
 
 func main() {
 	app := iris.New()
-	app.Use(recover.New())
-	app.Logger().SetLevel("debug")
+	//app.Use(recover.New())
+	//app.Logger().SetLevel("debug")
+	app.Logger().SetLevel("info")
 
 	app.HandleDir("/static", "./assets")
 	app.Favicon("./assets/favicon.ico")
@@ -45,19 +45,13 @@ func rootMVC(app *mvc.Application) {
 //http://192.168.0.199:8080/?page=123
 func (c *RootController) Get(ctx iris.Context) mvc.Result {
 
-	if ctx.IsMobile() {
-		fmt.Println("from mobile dev")
-	} else {
-		fmt.Println("from desktop")
-	}
-
 	currentPage, err := ctx.URLParamInt64("page")
 	if err != nil {
 		totalPages := model.CountDocumentsPages() / global.PhotosPerPage
 		currentPage = rand.Int63n(totalPages) //can random current page
 	}
 
-	view := rootview.RootView(currentPage)
+	view := rootview.RootView(currentPage, ctx.IsMobile())
 	return view
 }
 
@@ -72,7 +66,7 @@ func (c *RootController) GetYear(ctx iris.Context) mvc.Result {
 		fmt.Println("Did not currentPage")
 	}
 
-	view := rootview.YearView(currentYear, currentPage)
+	view := rootview.YearView(currentYear, currentPage, ctx.IsMobile())
 	return view
 }
 

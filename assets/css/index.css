@@ -1,6 +1,6 @@
-#innercontent {
+#content {
   float: right;
-  width: 92%;
+  width: 90%;
 }
 
 #navbar {
@@ -61,21 +61,17 @@
   overflow: auto;
 }
 
-.hoverinfo{
-    position:absolute;
-    top:15px;
-    left:15px;
-    font-size: 28px;
-    color:#ffffff
-    cursor:pointer;
+.photolist{
+    block:inline-block;
 }
 
-.hoverinfo p{
-    display: none;
-    color:#000000;
+ul.year{
+    float:left;
+    list-style-type: none;
+    padding-left:5px;
+    margin-top:5px;
 }
 
-.hoverinfo:hover p {
-    .background-color:rgba(255,255,255,0.7)
-    display:block;
+li {
+    margin-bottom:10px;
 }

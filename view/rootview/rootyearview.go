@@ -9,7 +9,7 @@ import (
 	"github.com/photoServer/view/util"
 )
 
-func YearView(thisyear int, currentPage int64) mvc.Result {
+func YearView(thisyear int, currentPage int64, mobile bool) mvc.Result {
 	yearList, err := model.GetYearList()
 	if err != nil {
 		fmt.Println("Can not Get Year List")
@@ -21,8 +21,14 @@ func YearView(thisyear int, currentPage int64) mvc.Result {
 	}
 
 	pagers := util.Pagers(currentPage, totalPages)
+
+	template := "index.html"
+	if mobile {
+		template = "mobileIndex.html"
+	}
+
 	return &mvc.View{
-		Name: "index.html",
+		Name: template,
 		Data: iris.Map{
 			"years":       yearList,
 			"thumb":       yearPic,
