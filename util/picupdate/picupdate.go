@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"image/jpeg"
 	"io"
+	"log"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -42,6 +43,14 @@ func connectToDB(uri, dbname string) (*mongo.Database, error) {
 }
 
 func main() {
+	file, err := os.OpenFile("info.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+	log.SetOutput(file)
+	log.Print("Logging to a file in Go!")
+
 	pathPtr := flag.String("path", ".", "Input a new path")
 	flag.Parse()
 
@@ -118,6 +127,14 @@ func insert(files []string) error {
 
 		document.Exif, document.GPSPosition = exif(file)
 
+		if document.CreateTime.IsZero() {
+			log.Printf("[%v]: CreateDate of %v is empty\n", time.Now(), file)
+		}
+		if len(document.FullImageSize) == 0 {
+
+			log.Printf("[%v]: Image Size of %v is empty\n", time.Now(), file)
+		}
+
 		_, insertErr := col.InsertOne(context.TODO(), document)
 		if insertErr != nil {
 			//check if the Md5 already exist in db is yes
@@ -166,15 +183,21 @@ func exif(file string) (global.Exif, global.GPSPosition) {
 		}
 
 		for k, v := range fileInfo.Fields {
+			//fmt.Printf("KEY:%v-----VALUE:%v\n", k, v)
 			switch k {
 			case "CreateDate":
 				_cDate := fmt.Sprintf("%v", v)
+				exifInfo.CreateTime = createDate(_cDate)
+				if exifInfo.CreateTime.IsZero() {
+					log.Printf("[%v]: CreateDate of %v is empty\n", time.Now(), file)
 
-				exifInfo.CreateTime, err = time.Parse("2006:01:02 15:04:05", _cDate)
-				if err != nil {
-					fmt.Printf("%s, Cannot convert %s of %v\n", Red("Opps!"), Red("CreateDate"), file)
-					exifInfo.CreateTime = time.Now()
 				}
+				/*
+					exifInfo.CreateTime, err = time.Parse("2006:01:02 15:04:05", _cDate)
+					if err != nil {
+						fmt.Printf("%s, Cannot convert %s of %v\n", Red("Opps!"), Red("CreateDate"), file)
+					}
+				*/
 
 			case "Make":
 				exifInfo.Make = fmt.Sprintf("%v", v)
@@ -200,8 +223,10 @@ func exif(file string) (global.Exif, global.GPSPosition) {
 				_gpsPosition := fmt.Sprintf("%v", v)
 				gps := strings.Split(_gpsPosition, ",")
 				gpsInfo.Latitude, gpsInfo.Longitude = gps[0], gps[1]
+			case "FullImageSize":
+				exifInfo.FullImageSize = fmt.Sprintf("%v", v)
 			case "ImageSize":
-				exifInfo.ImageSize = fmt.Sprintf("%v", v)
+				exifInfo.FullImageSize = fmt.Sprintf("%v", v)
 			}
 		}
 
@@ -244,4 +269,28 @@ func fileMd5(filePath string) (string, error) {
 	hashInBytes := hash.Sum(nil)[:16]
 	returnMD5String = hex.EncodeToString(hashInBytes)
 	return returnMD5String, nil
+}
+
+func createDate(ct string) time.Time {
+	_time, err := time.Parse("2006:01:02 15:04:05", ct)
+	if err != nil {
+		_time, err = time.Parse("2006:01:02 15:04:05-07:00", ct)
+		if err != nil {
+			_ct := []rune(ct)
+			if string(_ct[len(_ct)-2:]) == "下午" {
+				ct = string(_ct[:len(_ct)-2]) + "PM"
+				fmt.Println(ct)
+			} else {
+				ct = string(_ct[:len(_ct)-2]) + "AM"
+				fmt.Println(ct)
+			}
+			_time, err = time.Parse("2006:01:02 15:04:05PM", ct)
+			if err != nil {
+				return time.Time{}
+
+			}
+		}
+	}
+
+	return _time
 }

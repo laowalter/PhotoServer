@@ -37,7 +37,7 @@ type Exif struct {
 	LensSpec             string
 	LensID               string
 	FocalLength          string
-	ImageSize            string
+	FullImageSize        string
 }
 
 type GPSPosition struct {
