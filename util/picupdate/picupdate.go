@@ -43,7 +43,7 @@ func connectToDB(uri, dbname string) (*mongo.Database, error) {
 }
 
 func main() {
-	file, err := os.OpenFile("info.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+	file, err := os.OpenFile("picupdate.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -127,7 +127,7 @@ func insert(files []string) error {
 
 		document.Exif, document.GPSPosition = exif(file)
 
-		if document.CreateTime.IsZero() {
+		if document.CreateDate.IsZero() {
 			log.Printf("[%v]: CreateDate of %v is empty\n", time.Now(), file)
 		}
 		if len(document.FullImageSize) == 0 {
@@ -187,17 +187,11 @@ func exif(file string) (global.Exif, global.GPSPosition) {
 			switch k {
 			case "CreateDate":
 				_cDate := fmt.Sprintf("%v", v)
-				exifInfo.CreateTime = createDate(_cDate)
-				if exifInfo.CreateTime.IsZero() {
+				exifInfo.CreateDate = createDate(_cDate)
+				if exifInfo.CreateDate.IsZero() {
 					log.Printf("[%v]: CreateDate of %v is empty\n", time.Now(), file)
 
 				}
-				/*
-					exifInfo.CreateTime, err = time.Parse("2006:01:02 15:04:05", _cDate)
-					if err != nil {
-						fmt.Printf("%s, Cannot convert %s of %v\n", Red("Opps!"), Red("CreateDate"), file)
-					}
-				*/
 
 			case "Make":
 				exifInfo.Make = fmt.Sprintf("%v", v)

@@ -23,7 +23,7 @@ func QueryPhotosByYear(year int, pageNumber int64) ([]global.Document, int64, er
 		fromDate = time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC)
 		toDate = time.Date(year+1, time.January, 1, 0, 0, 0, 0, time.UTC)
 		filter = bson.M{
-			"createtime": bson.M{
+			"createdate": bson.M{
 				"$gt": fromDate,
 				"$lt": toDate,
 			},
@@ -31,7 +31,7 @@ func QueryPhotosByYear(year int, pageNumber int64) ([]global.Document, int64, er
 	} else {
 		toDate = time.Date(1000, time.January, 1, 0, 0, 0, 0, time.UTC)
 		filter = bson.M{
-			"createtime": bson.M{
+			"createdate": bson.M{
 				"$lt": toDate,
 			},
 		}
@@ -58,18 +58,20 @@ func QueryAllPhotos(pageNumber int64) ([]global.Document, int64, error) {
 
 }
 
-func CountDocumentsPages() int64 {
+func CountDocumentsPages() (int64, error) {
 	var totalPages int64
-	filter := bson.M{}
+
 	database, collection, uri := "album", "pic", "mongodb://localhost:27017"
 	db, _ := connectToDB(uri, database)
 	col := db.Collection(collection)
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
+
+	filter := bson.M{}
 	totalNumbers, err := col.CountDocuments(ctx, filter)
 	if err != nil {
 		fmt.Println("CountDocument() error")
-		return 0
+		return 0, err
 	}
 
 	if totalNumbers%global.PhotosPerPage == 0 {
@@ -77,7 +79,7 @@ func CountDocumentsPages() int64 {
 	} else {
 		totalPages = totalNumbers/global.PhotosPerPage + 1
 	}
-	return totalPages
+	return totalPages, nil
 }
 
 func getMultipleDocuments(filter bson.M, pageNumber int64) ([]global.Document, int64, error) {

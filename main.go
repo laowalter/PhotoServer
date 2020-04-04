@@ -20,7 +20,7 @@ func main() {
 	//app.Logger().SetLevel("debug")
 	app.Logger().SetLevel("info")
 
-	app.HandleDir("/static", "./assets")
+	app.StaticWeb("/static", "./assets")
 	app.Favicon("./assets/favicon.ico")
 
 	tmpl := iris.HTML("./view/templates", ".html")
@@ -46,11 +46,19 @@ func rootMVC(app *mvc.Application) {
 func (c *RootController) Get(ctx iris.Context) mvc.Result {
 
 	currentPage, err := ctx.URLParamInt64("page")
+	fmt.Println(currentPage)
 	if err != nil {
-		totalPages := model.CountDocumentsPages() / global.PhotosPerPage
-		currentPage = rand.Int63n(totalPages) //can random current page
-	}
+		totalPages, err := model.CountDocumentsPages()
+		if err != nil {
+			//Database total photopage calculate wrong
+			panic(err)
+		}
 
+		currentPage = rand.Int63n(totalPages) //can random current page
+		if currentPage == 0 {                 //minmum rand number can be zero.
+			currentPage = 1
+		}
+	}
 	view := rootview.RootView(currentPage, ctx.IsMobile())
 	return view
 }

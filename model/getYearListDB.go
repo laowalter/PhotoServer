@@ -20,13 +20,13 @@ func GetYearList() ([]*global.YearCount, error) {
 	defer cancel()
 	/*
 		db.pic.aggregate({$group:
-			{ _id:   {year:{$year:"$createtime"}},
+			{ _id:   {year:{$year:"$createdate"}},
 			  counter:{$sum:1}
 		    }},
 			{$sort:{"_id.year":-1}}
 		  )
 	*/
-	pipeline := []bson.M{bson.M{"$group": bson.M{"_id": bson.M{"year": bson.M{"$year": "$createtime"}},
+	pipeline := []bson.M{bson.M{"$group": bson.M{"_id": bson.M{"year": bson.M{"$year": "$createdate"}},
 		"counter": bson.M{"$sum": 1},
 	}},
 		bson.M{"$sort": bson.M{"_id.year": -1}},

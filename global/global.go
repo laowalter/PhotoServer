@@ -26,7 +26,7 @@ type Document struct {
 }
 
 type Exif struct {
-	CreateTime           time.Time
+	CreateDate           time.Time
 	Make                 string
 	Model                string
 	ShutterSpeed         string

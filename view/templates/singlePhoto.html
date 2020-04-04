@@ -13,7 +13,7 @@
     </div>
     <div id="navbar">
         <p>文件路径: {{.photo.Path}}</p>
-        <p>拍摄时间: {{.photo.CreateTime}}</p>
+        <p>拍摄时间: {{.photo.CreateDate}}</p>
         <p>图像尺寸: {{.photo.FullImageSize}}</p>
         <p>相机厂商: {{.photo.Make}}</p>
         <p>相机型号: {{.photo.Model}}</p>
@@ -23,6 +23,7 @@
         <p>曝光补偿: {{.photo.ExposureCompensation}}</p>
         <p>焦距: {{.photo.FocalLength}}</p>
         <p>镜头型号: {{.photo.LensID}}</p>
+        <p>GPS: 经度:{{.photo.Longitude}}  纬度:{{.photo.Latitude}}</p>
     </div>
 </body>
 </html>
