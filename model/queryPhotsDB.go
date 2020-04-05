@@ -115,6 +115,7 @@ func getMultipleDocuments(filter bson.M, pageNumber int64) ([]global.Document, i
 		filter,
 		opt.SetSkip((pageNumber-1)*global.PhotosPerPage),
 		opt.SetLimit(global.PhotosPerPage),
+		opt.SetSort(bson.M{"createdate": -1}),
 	)
 
 	if err != nil {

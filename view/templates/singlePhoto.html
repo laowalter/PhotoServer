@@ -13,17 +13,17 @@
     </div>
     <div id="navbar">
         <p>文件路径: {{.photo.Path}}</p>
-        <p>拍摄时间: {{.photo.CreateDate}}</p>
-        <p>图像尺寸: {{.photo.FullImageSize}}</p>
-        <p>相机厂商: {{.photo.Make}}</p>
-        <p>相机型号: {{.photo.Model}}</p>
-        <p>快门速度: {{.photo.ShutterSpeed}}</p>
-        <p>ISO: {{.photo.ISO}}</p>
-        <p>光圈: {{.photo.Aperture}}</p>
-        <p>曝光补偿: {{.photo.ExposureCompensation}}</p>
-        <p>焦距: {{.photo.FocalLength}}</p>
-        <p>镜头型号: {{.photo.LensID}}</p>
-        <p>GPS: 经度:{{.photo.Longitude}}  纬度:{{.photo.Latitude}}</p>
+        <p>{{if .photo.CreateDate}}拍摄时间: {{.photo.CreateDate}}{{end}}</p>
+        <p>{{if .photo.FullImageSize}}图像尺寸: {{.photo.FullImageSize}}{{end}}</p>
+        <p>{{if .photo.Make}}相机厂商: {{.photo.Make}}{{end}}</p>
+        <p>{{if .photo.Model}}相机型号: {{.photo.Model}}{{end}}</p>
+        <p>{{if .photo.ShutterSpeed}}快门速度: {{.photo.ShutterSpeed}}{{end}}</p>
+        <p>{{if .photo.ISO}}ISO: {{.photo.ISO}}{{end}}</p>
+        <p>{{if .photo.Aperture}} 光圈: {{.photo.Aperture}}{{end}}</p>
+        <p>{{if .photo.ExposureCompensation}}曝光补偿: {{.photo.ExposureCompensation}}{{end}}</p>
+        <p>{{if .photo.FocalLength}}焦距: {{.photo.FocalLength}}{{end}}</p>
+        <p>{{if .photo.LensID}}镜头型号: {{.photo.LensID}}{{end}}</p>
+        <p>{{if .photo.Longitude}}GPS: 经度:{{.photo.Longitude}}  纬度:{{.photo.Latitude}}{{end}}</p>
     </div>
 </body>
 </html>

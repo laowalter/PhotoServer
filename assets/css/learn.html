@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+        <style>
+            #div1 button{width:100px;height:30px;background-olor:gray;font-size:16px;color:white}
+            #div1 div{width:350px;height:350px;background-color:gray;border=1px;solid black;display:none}
+            #div1 .active{backgroud-color:orange; color:blue}
+        </style>
+        <title>Document</title>
+        <script src='jquery-3.4.1.min.js'></script>
+        <script>
+$(function(){
+    var aBtns = $("#div1").find("button");
+    var aDivs = $("#div1").find("div");
+    aBtns.click(function(){
+        aBtns.attr("class","");
+        aDivs.css("display","none");
+        $(this).attr("class", "active");
+        aDivs.eq($(this).index()).css("display", "block");
+
+    })
+})
+        </script>
+    </head>
+    <body> 
+        <div id="div1">
+            <button class="active">HTML5</button>
+            <button>Javascript</button>
+            <button>JQuery</button>
+            <div style="display:block">huanji Wenxue (傳記文學, Biography Literature Magazine) is an essential biographical reference source for important figures in the Republic of China.</div>
+            <div>(傳記文學, Biography Literature Magazine) is an essential biographical reference source for important figures in the Republic of China.</div>
+            <div>is an essential biographical reference source for important figures in the Republic of China.</div>
+        </div>
+    </body>
+</html>
+
