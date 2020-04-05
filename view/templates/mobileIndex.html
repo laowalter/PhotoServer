@@ -3,105 +3,31 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<style>
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.mobile-container {
-  max-width: 480px;
-  margin: auto;
-  background-color: #555;
-  height: 500px;
-  color: white;
-  border-radius: 10px;
-}
-
-.topnav {
-  overflow: hidden;
-  background-color: #333;
-  position: relative;
-}
-
-.topnav #myLinks {
-  display: none;
-}
-
-.topnav a {
-  color: white;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
-  display: block;
-}
-
-.topnav a.icon {
-  background: black;
-  display: block;
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-
-.topnav a:hover {
-  background-color: #ddd;
-  color: black;
-}
-
-.active {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.photolist{
-    max-width:100%
-}
-
-</style>
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+<script>
+    $(function(){
+        width = $("#content").attr("role","main").width();
+        $("#photo-line").each(function(){
+                console.log($this.attr("width", width/4));
+        })
+    })
+</script>
 </head>
 <body>
-
-<!-- Simulate a smartphone / tablet -->
-<div class="mobile-container">
-
-<!-- Top Navigation Menu -->
-<div class="topnav">
-    <a href="#home" class="active">Logo</a>
-    <div id="myLinks">
-        {{range $index, $elem := .years }}
-            {{if eq $elem.Year 1 }}
-                <a href="/year?year={{$elem.Year}}&page=1">Others - ({{$elem.Number}})</a>
-            {{else}}
-                <a href="/year?year={{$elem.Year}}&page=1">{{$elem.Year}} - ({{$elem.Number}})</a>
-            {{end}}
-        {{end}}
+    <div data-role="header">
+        <h1>My Album</h1>
     </div>
-    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
-        <i class="fa fa-bars"></i>
-    </a>
-</div>
-<!-- End smartphone / tablet look -->
+    <div id="content" role="main" class="ui-content">
+        {{ $thisyear := .currentyear }}
+        {{range $index, $elem := .thumb }}
+            <a title="{{.Path}}" href="single?md5={{$elem.Md5}}">
+                <img id="photo-line" src="data:image/jpeg;base64,{{$elem.Thumbnail}}"  />
+            </a>
+        {{end}}
 
-<div clsss="photolist">
-    {{range $index, $elem := .thumb }}
-        <a title="{{.Path}}" href="single?md5={{$elem.Md5}}">
-            <img src="data:image/jpeg;base64,{{$elem.Thumbnail}}"/>
-        </a>
-    {{end}}
-</div>
-
-</div> <!-- mobile-container -->
-
-<script>
-function myFunction() {
-  var x = document.getElementById("myLinks");
-  if (x.style.display === "block") {
-    x.style.display = "none";
-  } else {
-    x.style.display = "block";
-  }
-}
-</script>
+    </div>
 
 </body>
 </html>
