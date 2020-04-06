@@ -15,7 +15,7 @@ $ go get -u github.com/laowalter/photoserver
 
 ## Complile tools
 
-1. Insert photo data to DB.
+1. Compile program for uploading photo to DB.
 
 ```bash
 $ cd photoserver
@@ -31,15 +31,17 @@ $ cd util/dbclean
 $ go build dbclean.go
 ```
 
-## Useage
+## Usage
 
-1. Insert photo album located in "/data/album" in to DB
+1. Upload photo album located in "/data/album" in to DB
 
 ```bash
 $ picupdate -path /data/ablum
 ```
 
 2. Run dbclean
+
+Remove the photos moved or deleted from the previous upload directory.
 
 ```bash
 $ dbclean
