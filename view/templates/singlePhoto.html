@@ -5,11 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="/static/css/index.css?v=1.1">
+    <script src="/static/css/jquery-3.4.1.slim.min.js"></script> 
     <title>MyAlbum</title>
+    <script>
+        $(function(){
+
+            $(".imgfullscreen").on({
+                "dblclick": function(){
+                    parent.history.back();
+                },
+
+                "click": function(){
+                    $("#overlay").css("display", function(){
+                        return $("#overlay").css("display") == "none" ? "block":"none";
+                    });
+                },
+            })
+        })
+
+    </script>
 </head>
 <body>
     <div id="container">
         <img class="imgfullscreen" src="data:image/jpeg;base64,{{.thumb}}" id="responsive-image"/>
+        <h2 id="overlay">The overlay text</h2>
     </div>
     <div id="navbar">
         <p>文件路径: {{.photo.Path}}</p>
