@@ -15,7 +15,11 @@
                 var top = $(window).scrollTop()+ height;
                 $("#photolist").offset({top:top});
             })
+
             
+            $(".largephoto").on("click", function(){
+                //alert("class largephot clicked");
+            }) 
         })
     </script>
 </head>
@@ -27,7 +31,7 @@
             {{ $thisyear := .currentyear }}
             <div class="photolist">
                 {{range $index, $elem := .thumb }}
-                    <a title="{{.Path}}" href="single?md5={{$elem.Md5}}">
+                <a class="largephoto" title="{{.Path}}" href="single?md5={{$elem.Md5}}"> <!-- http://192.168.0.199:8080/ -->
                         <img src="data:image/jpeg;base64,{{$elem.Thumbnail}}"/>
                     </a>
                 {{end}}
