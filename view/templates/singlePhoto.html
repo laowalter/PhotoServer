@@ -29,18 +29,18 @@
     <div id="container">
         <img class="imgfullscreen" src="data:image/jpeg;base64,{{.thumb}}" id="responsive-image"/>
         <div id="overlay">
-        <p>文件路径: {{.photo.Path}}
-        {{if .photo.CreateDate}}拍摄时间: {{.photo.CreateDate}}{{end}}
-        {{if .photo.FullImageSize}}图像尺寸: {{.photo.FullImageSize}}{{end}}<br/>
-        {{if .photo.Make}}相机厂商: {{.photo.Make}}{{end}}
-        {{if .photo.Model}}相机型号: {{.photo.Model}}{{end}}
-        {{if .photo.ShutterSpeed}}快门速度: {{.photo.ShutterSpeed}}{{end}}
-        {{if .photo.ISO}}ISO: {{.photo.ISO}}{{end}}
-        {{if .photo.Aperture}} 光圈: {{.photo.Aperture}}{{end}}
-        {{if .photo.ExposureCompensation}}曝光补偿: {{.photo.ExposureCompensation}}{{end}}
-        {{if .photo.FocalLength}}焦距: {{.photo.FocalLength}}{{end}}
-        {{if .photo.LensID}}镜头型号: {{.photo.LensID}}{{end}}
-        {{if .photo.Longitude}}GPS: 经度:{{.photo.Longitude}}  纬度:{{.photo.Latitude}}{{end}}</p>
+        <p>FilePath: {{.photo.Path}} &nbsp;&nbsp;
+        {{if .photo.CreateDate}}Date: {{.photo.CreateDate}}{{end}} &nbsp;&nbsp;
+        {{if .photo.FullImageSize}}Size: {{.photo.FullImageSize}}{{end}}</p>
+        <p>{{if .photo.Make}}Vendor: {{.photo.Make}}&nbsp;&nbsp;{{end}}
+        {{if .photo.Model}}Type: {{.photo.Model}}&nbsp;&nbsp;{{end}}
+        {{if .photo.ShutterSpeed}}Speed: {{.photo.ShutterSpeed}}&nbsp;&nbsp;{{end}}
+        {{if .photo.ISO}}ISO: {{.photo.ISO}}&nbsp;&nbsp;{{end}}
+        {{if .photo.Aperture}}Aperture: {{.photo.Aperture}}&nbsp;&nbsp;{{end}}
+        {{if .photo.ExposureCompensation}}ExposureCompensation: {{.photo.ExposureCompensation}}&nbsp;&nbsp;{{end}}
+        {{if .photo.FocalLength}}Focus: {{.photo.FocalLength}}&nbsp;&nbsp;{{end}}
+        {{if .photo.LensID}}Lens: {{.photo.LensID}}&nbsp;&nbsp;{{end}}
+        {{if .photo.Longitude}}GPS: {{.photo.Longitude}} &nbsp;{{.photo.Latitude}}{{end}}</p></p>
         </div>
     </div>
 </body>
