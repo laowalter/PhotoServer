@@ -9,22 +9,26 @@
 } 
 
 #footer{
-    clear:both;
-    text-align:center;
+  clear:both;
+  text-align:center;
+  margin-top: 10px;
 }
 
 #header{
-    text-align:center;
+  text-align:center;
 }
 
 .centerparent{
-  display: block;
+  text-align:center;
   justify-content: center;
   align-items: center;
+  margin-top:20px;
 }
 
 .pagination {
+    /*
   display: inline-block;
+  */
 }
 
 .pagination a {
@@ -88,7 +92,7 @@ li {
     color: white;
     display: none;
 }
-.thumb{
+.thumb{ 
 
 }
 
@@ -97,5 +101,8 @@ li {
 }
 
 #selectbtn{
+    text-align:center;
     display: none;
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
