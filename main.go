@@ -59,6 +59,7 @@ func (c *RootController) Get(ctx iris.Context) mvc.Result {
 			currentPage = 1
 		}
 	}
+	//view := ajaxview.RootView(currentPage, ctx.IsMobile())
 	view := rootview.RootView(currentPage, ctx.IsMobile())
 	return view
 }
@@ -73,14 +74,37 @@ func (c *RootController) GetYear(ctx iris.Context) mvc.Result {
 	if err != nil {
 		fmt.Println("Did not currentPage")
 	}
-
 	view := rootview.YearView(currentYear, currentPage, ctx.IsMobile())
+	//view := ajaxview.YearView(currentYear, currentPage, ctx.IsMobile())
 	return view
 }
 
 //http://192.168.0.199:8080/single?md5=md5string
 func (c *RootController) GetSingle(ctx iris.Context) mvc.Result {
 	md5 := ctx.URLParam("md5")
+	//view := ajaxview.SinglePhotoView(md5)
 	view := rootview.SinglePhotoView(md5)
 	return view
+}
+
+type File struct {
+	Filename string `json:"filename"`
+}
+
+//http://192.168.0.199:8080/delete//http://192.168.0.199:8080/  Post method
+func (c *RootController) PostDelete(ctx iris.Context) {
+	/*
+	  // [{"name": "ABC", "age":20}, {"name":"XYZ", "age":23}]
+	*/
+	req := ctx.Request()
+	fmt.Println(req)
+
+	var file []File
+	err := ctx.ReadJSON(&file)
+	if err != nil {
+		fmt.Println("Parse error")
+		return
+	}
+	fmt.Println(file)
+
 }

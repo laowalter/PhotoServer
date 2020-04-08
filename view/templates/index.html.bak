@@ -5,87 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="/static/css/index.css?v=1.1">
-    <script src="/static/css/jquery-3.4.1.min.js"></script> 
+    <script src="/static/css/jquery-3.4.1.slim.min.js"></script> 
     <title>My Album</title>
     <script>
         $(function(){
 
-            var selectList = [];
-// data: JSON.stringify(selectList),
             var height = $("#photolist").outerHeight()/2;
             $(window).on("scroll resize", function(){
                 var top = $(window).scrollTop()+ height;
                 $("#photolist").offset({top:top});
             })
 
-            $(".thumb").on("click", function(){
-                var $this = $(this);
-                if ($this.hasClass('clicked')){//dblclick for select
-                    $this.removeClass('clicked'); 
-                    $this.toggleClass('selected');
-                    var index = selectList.indexOf($this.attr("path"));
-                    if (index>-1){
-                        selectList.splice(index, 1);
-                    } else{
-                        selectList.push($this.attr("path"));
-                    }
-
-                }else{ //single click for enlarge a single pic
-                    $this.addClass('clicked');
-                    setTimeout(function() { 
-                        if ($this.hasClass('clicked')){
-                            $this.removeClass('clicked'); 
-                            window.open($this.attr("href"), "_self");
-                        }
-                    }, 700);          
-                }
-
-                $(function(){
-                    if (selectList.length>0){
-                        $("#selectbtn").css("display", "block");
-                    } else {
-                        $("#selectbtn").css("display", "none");                   
-                    }
-                });
-            });
-
-            $("#delete").on("click", function(){
-                $.ajax({ 
-                        type: "post", 
-                        url: "/delete", 
-                        contentType: 'application/json',
-                        dataType: 'json',
-                        data: {"filename":"/data/album/asdf.jpg"},
-                        error: function (xhr, status) {
-                            alert(status);
-                        },
-                        success: function (result) {
-                            alert("Callback done!");
-                        }
-                }); 
-            });
-
-          
+            $(".largephoto").on("click", function(){
+                //alert("class largephot clicked");
+            }) 
         })
     </script>
 </head>
 <body>
 <div id="container">
-    <div id="header"><h1>My Album</h1></div>
+    <div id="header">My Album</div>
     <div id="content">
         <div class="centerparent">
             {{ $thisyear := .currentyear }}
             <div class="photolist">
                 {{range $index, $elem := .thumb }}
-                    <!-- http://192.168.0.199:8080/ -->
-                    <img class="thumb" src="data:image/jpeg;base64,{{$elem.Thumbnail}}" 
-                            path="{{.Path}}" href="single?md5={{$elem.Md5}}" />
+                <a class="largephoto" title="{{.Path}}" href="single?md5={{$elem.Md5}}"> <!-- http://192.168.0.199:8080/ -->
+                        <img src="data:image/jpeg;base64,{{$elem.Thumbnail}}"/>
+                    </a>
                 {{end}}
             </div>
-        </div>
-        <div id="selectbtn">
-            <button id="delete">Delete Photos</button>
-            <button>Add Tags</button>
         </div>
         
         <div class="centerparent">
