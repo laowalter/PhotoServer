@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"math/rand"
 
 	"github.com/kataras/iris"
@@ -93,18 +94,11 @@ type File struct {
 
 //http://192.168.0.199:8080/delete//http://192.168.0.199:8080/  Post method
 func (c *RootController) PostDelete(ctx iris.Context) {
-	/*
-	  // [{"name": "ABC", "age":20}, {"name":"XYZ", "age":23}]
-	*/
-	req := ctx.Request()
-	fmt.Println(req)
-
-	var file []File
-	err := ctx.ReadJSON(&file)
+	rawBodyAsBytes, err := ioutil.ReadAll(ctx.Request().Body)
 	if err != nil {
-		fmt.Println("Parse error")
-		return
+		fmt.Println("Can not get Delete string.")
 	}
-	fmt.Println(file)
-
+	ctx.StatusCode(iris.StatusOK)
+	rawBodyAsString := string(rawBodyAsBytes)
+	fmt.Printf("%T, %v\n", rawBodyAsString, rawBodyAsString)
 }

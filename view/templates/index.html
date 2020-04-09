@@ -54,14 +54,10 @@
                         type: "post", 
                         url: "/delete", 
                         contentType: 'application/json',
-                        dataType: 'json',
-                        data: {"filename":"/data/album/asdf.jpg"},
-                        error: function (xhr, status) {
-                            alert(status);
-                        },
-                        success: function (result) {
-                            alert("Callback done!");
-                        }
+                        dataType: 'text',
+                        data: selectList.join(','),
+                        success:function(result){ alert("ok"); },
+                        error: function(xhr, status){ alert(xhr.status); }
                 }); 
             });
 
