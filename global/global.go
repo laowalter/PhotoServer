@@ -9,7 +9,10 @@ const (
 	ThumbnailHeight = 250
 
 	//Photos Per Page
-	PhotosPerPage = int64(10)
+	PhotosPerPage = int64(100)
+
+	//Deleted file Directory
+	RemovedDir = "/data/album/delete"
 )
 
 type Document struct {

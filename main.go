@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"math/rand"
+	"strings"
 
 	"github.com/kataras/iris"
 	"github.com/photoServer/global"
@@ -99,6 +100,7 @@ func (c *RootController) PostDelete(ctx iris.Context) {
 		fmt.Println("Can not get Delete string.")
 	}
 	ctx.StatusCode(iris.StatusOK)
-	rawBodyAsString := string(rawBodyAsBytes)
-	fmt.Printf("%T, %v\n", rawBodyAsString, rawBodyAsString)
+	filePathList := strings.Split(string(rawBodyAsBytes), ",")
+
+	model.DeletePhotos(filePathList)
 }
