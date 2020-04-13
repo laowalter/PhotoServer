@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/static/css/index.css?v=1.1">
+    <script src="/static/css/jquery-3.4.1.min.js"></script> 
+    <title>My Album</title>
+    <script src= "/static/templates/index_jquery.js"></script>
+
+</head>
+<body>
+<div id="container">
+    <div id="header"><h1>My Album</h1></div>
+    <div id="content">
+        <div class="centerparent">
+            {{ $thisyear := .currentyear }}
+            <div class="photolist">
+                {{range $index, $elem := .thumb }}
+                    <!-- http://192.168.0.199:8080/ -->
+                    <img class="thumb" src="data:image/jpeg;base64,{{$elem.Thumbnail}}" 
+                            path="{{.Path}}" href="single?md5={{$elem.Md5}}" />
+                {{end}}
+            </div>
+        </div>
+        <div id="selectbtn">
+            <button id="delete">Delete Photos</button>
+            <button id="addtags">Add Tag</button>
+        </div>
+        
+        <div class="centerparent">
+            <div class="pagination">
+            {{if $thisyear }} <!-- http://192.168.0.199:8080/?page=63 -->
+                <a href="/year?year={{$thisyear}}&page=1">First Page</a>
+                {{range $index, $pageNumber := .pagers.Before}}
+                    <a href="/year?year={{$thisyear}}&page={{$pageNumber}}">{{$pageNumber}}</a>
+                {{end}}
+                <span style="color:red">{{ .pagers.Current }}</span>
+                {{range $index, $pageNumber := .pagers.After}}
+                    <a href="/year?year={{$thisyear}}&page={{$pageNumber}}">{{$pageNumber}}</a>
+                {{end}}
+                <a href="/year?year={{$thisyear}}&page={{.totalpages}}">Last Page</a>
+            {{else}} <!--http://192.168.0.199:8080/year?year=2018&page=1 -->
+                <a href="?page=1">First Page</a>
+                {{range $index, $pageNumber := .pagers.Before}}
+                    <a href="?page={{$pageNumber}}">{{$pageNumber}}</a>
+                {{end}}
+                 <span style="color:red">{{ .pagers.Current }}</span>
+                {{range $index, $pageNumber := .pagers.After}}
+                    <a href="?page={{$pageNumber}}">{{$pageNumber}}</a>
+                {{end}}
+                <a href="?page={{.totalpages}}">Last Page</a>
+            {{end}}
+        </div>
+     </div>
+</div>
+<div id="navbar">
+    <div id="photolist">
+        <p><span style="color:blue; font-size:1.5em; font-weight: bold;">Photo List</span></p>
+        <ul class="year">
+            {{range $index, $elem := .years }}
+                {{if eq $elem.Year 1 }}
+                    <li><a href="/year?year={{$elem.Year}}&page=1">Others - ({{$elem.Number}})</a></li>
+                {{else}}
+                    <li><a href="/year?year={{$elem.Year}}&page=1">{{$elem.Year}} - ({{$elem.Number}})</a></li>
+                {{end}}
+            {{end}}
+        </ul>
+    </div>
+</div>
+<div id="footer">
+        <hr />
+        <div class="topmargin">
+            Copyright (C) 2020. All rights reserved.
+        </div>
+</div>
+</body>
+</html>

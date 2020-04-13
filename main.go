@@ -25,7 +25,7 @@ func main() {
 	app.StaticWeb("/static", "./assets")
 	app.Favicon("./assets/favicon.ico")
 
-	tmpl := iris.HTML("./view/templates", ".html")
+	tmpl := iris.HTML("./assets/templates", ".html")
 	app.RegisterView(tmpl)
 
 	mvc.Configure(app.Party("/"), rootMVC)
@@ -89,12 +89,9 @@ func (c *RootController) GetSingle(ctx iris.Context) mvc.Result {
 	return view
 }
 
-type File struct {
-	Filename string `json:"filename"`
-}
-
-//http://192.168.0.199:8080/delete//http://192.168.0.199:8080/  Post method
+//http://192.168.0.199:8080/delete/  Post method
 func (c *RootController) PostDelete(ctx iris.Context) {
+	// Accept a path string split by ","
 	rawBodyAsBytes, err := ioutil.ReadAll(ctx.Request().Body)
 	if err != nil {
 		fmt.Println("Can not get Delete string.")
@@ -103,4 +100,15 @@ func (c *RootController) PostDelete(ctx iris.Context) {
 	filePathList := strings.Split(string(rawBodyAsBytes), ",")
 
 	model.DeletePhotos(filePathList)
+}
+
+func (c *RootController) PostAddtags(ctx iris.Context) {
+	// Accept a path string split by ","
+	rawBodyAsBytes, err := ioutil.ReadAll(ctx.Request().Body)
+	if err != nil {
+		fmt.Println("Can not get Delete string.")
+	}
+	ctx.StatusCode(iris.StatusOK)
+	tagsWithFiles := string(rawBodyAsBytes) // "tags|filePathList"
+	model.AddTags(tagsWithFiles)
 }

@@ -17,15 +17,16 @@ const (
 
 type Document struct {
 	//保存到数据库中的基础结构
-	FileName    string `bson:"filename"`
-	Path        string `bson:"path"`
-	PathBase64  string `bson:,omitempty` //base64
-	ContentType string `bson:"content_type"`
-	Thumbnail   string `bson:"thumbnail"` //base64
-	Md5         string `bson:"md5"`
+	FileName    string    `bson:"filename"`
+	Path        string    `bson:"path"`
+	PathBase64  string    `bson:,omitempty` //base64
+	ContentType string    `bson:"content_type"`
+	Thumbnail   string    `bson:"thumbnail"` //base64
+	Md5         string    `bson:"md5"`
+	ImportTime  time.Time `bson:"import_at"`
+	Tags        []string  `bson:tag,omitempty`
 	GPSPosition `bson:"inline,omitempty"`
 	Exif        `bson:"inline,omitempty"`
-	ImportTime  time.Time `bson:"import_at"`
 }
 
 type Exif struct {

@@ -100,6 +100,20 @@ func insert(files []string) error {
 		} else { // API call returns string of the index name
 			fmt.Printf("Notice: Use %s of file as the unique index.\n", Red("md5sum"))
 		}
+
+		mod = mongo.IndexModel{
+			Keys: bson.M{
+				"path": 1,
+			}, Options: options.Index().SetUnique(true),
+		}
+		_, err = col.Indexes().CreateOne(context.TODO(), mod)
+		if err != nil { // Check if the CreateOne() method returned any errors
+			fmt.Println("Indexes().CreateOne() ERROR:", err)
+			os.Exit(1)
+		} else { // API call returns string of the index name
+			fmt.Printf("Notice: Use %s of file as the unique index.\n", Red("md5sum"))
+		}
+
 	}
 
 	var _elapseTime time.Duration

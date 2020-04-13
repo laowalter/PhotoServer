@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/static/css/index.css?v=1.1">
+    <script src="/static/css/jquery-3.4.1.slim.min.js"></script> 
+    <title>MyAlbum</title>
+    <script>
+        $(function(){
+
+            $(".imgfullscreen").on({
+                "dblclick": function(){
+                    parent.history.back();
+                },
+
+                "click": function(){
+                    $("#overlay").css("display", function(){
+                        return $("#overlay").css("display") == "none" ? "block":"none";
+                    });
+                },
+            })
+        })
+
+    </script>
+</head>
+<body>
+    <div id="container">
+        <img class="imgfullscreen" src="data:image/jpeg;base64,{{.thumb}}" id="responsive-image"/>
+        <div id="overlay">
+        <p>FilePath: {{.photo.Path}} &nbsp;&nbsp;
+        {{if .photo.CreateDate}}Date: {{.photo.CreateDate}}{{end}} &nbsp;&nbsp;
+        {{if .photo.FullImageSize}}Size: {{.photo.FullImageSize}}{{end}}</p>
+        <p>{{if .photo.Make}}Vendor: {{.photo.Make}}&nbsp;&nbsp;{{end}}
+        {{if .photo.Model}}Type: {{.photo.Model}}&nbsp;&nbsp;{{end}}
+        {{if .photo.ShutterSpeed}}Speed: {{.photo.ShutterSpeed}}&nbsp;&nbsp;{{end}}
+        {{if .photo.ISO}}ISO: {{.photo.ISO}}&nbsp;&nbsp;{{end}}
+        {{if .photo.Aperture}}Aperture: {{.photo.Aperture}}&nbsp;&nbsp;{{end}}
+        {{if .photo.ExposureCompensation}}ExposureCompensation: {{.photo.ExposureCompensation}}&nbsp;&nbsp;{{end}}
+        {{if .photo.FocalLength}}Focus: {{.photo.FocalLength}}&nbsp;&nbsp;{{end}}
+        {{if .photo.LensID}}Lens: {{.photo.LensID}}&nbsp;&nbsp;{{end}}
+        {{if .photo.Longitude}}GPS: {{.photo.Longitude}} &nbsp;{{.photo.Latitude}}{{end}}</p></p>
+        </div>
+    </div>
+</body>
+</html>
