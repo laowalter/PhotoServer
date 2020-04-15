@@ -102,8 +102,10 @@ func (c *RootController) PostDelete(ctx iris.Context) {
 	model.DeletePhotos(filePathList)
 }
 
+//http://192.168.0.199:8080/addtags
 func (c *RootController) PostAddtags(ctx iris.Context) {
-	// Accept a path string split by ","
+	// "|" between tags and filePathList
+	// "," between filepath in filePathList
 	rawBodyAsBytes, err := ioutil.ReadAll(ctx.Request().Body)
 	if err != nil {
 		fmt.Println("Can not get Delete string.")
