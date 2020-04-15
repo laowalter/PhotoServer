@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/static/css/index.css?v=1.1">
+    <script src="/static/css/jquery-3.4.1.min.js"></script> 
+    <title>My Album</title>
+    <script src= "/static/templates/index_jquery.js"></script>
+
+</head>
+<body>
+<div id = "content">
+    <div class="tags" >
+        {{range $index, $tag := .tags}}
+        <button id="delete">{{ $tag }}</button>
+        {{end}}
+    </div>    
+</div>
+<div id="footer">
+        <hr />
+        <div class="topmargin">
+            Copyright (C) 2020. All rights reserved.
+        </div>
+</div>
+</body>
+</html>

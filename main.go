@@ -114,3 +114,9 @@ func (c *RootController) PostAddtags(ctx iris.Context) {
 	tagsWithFiles := string(rawBodyAsBytes) // "tags|filePathList"
 	model.AddTags(tagsWithFiles)
 }
+
+//http://192.168.0.199:8080/tagmgnt
+func (c *RootController) GetTagmgnt(ctx iris.Context) mvc.Result {
+	view := rootview.TagManagement()
+	return view
+}
