@@ -9,16 +9,20 @@
     -->
     <script src="/static/css/jquery-3.4.1.min.js"></script> 
     <style>
-        .imgfullscreen {
-          position: fixed;
-          top: 0;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          max-width: 100%;
-          max-height: 100%;
-          margin: auto;
-          overflow: auto;
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        
+        .slide {
+            position: absolute;
+            top: 0;
+            margin:auto;
+            display: block;
+        }
+        
+        .myimg {
+            height: inherit;
         }
     </style>
     <title>MyAlbum</title>
@@ -26,8 +30,6 @@
 </head>
 <body>
     <div class="slide">
-        <p id="slide">Click me to slide</p>
-        <img id="curr" class="imgfullscreen" src="" height="">
     </div>
 </body>
 </html>

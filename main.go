@@ -130,7 +130,7 @@ func (c *RootController) PostSlide(ctx iris.Context) {
 	var photo slideFile
 	if err := ctx.ReadJSON(&photo); err != nil {
 		ctx.StatusCode(iris.StatusBadRequest)
-		ctx.JSON(iris.Map{"status": iris.StatusBadRequest, "message": err.Error()})
+		//ctx.JSON(iris.Map{"status": iris.StatusBadRequest, "message": err.Error()})
 		return
 	}
 	photoBase64 := model.GenOriginalPicBase64(photo.Path)
