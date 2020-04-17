@@ -9,8 +9,8 @@
 *.BMP
 *.tiff
 *.TIFF
+test/*
 tmp/*
-tmp
 main
 picupdate
 dbclean

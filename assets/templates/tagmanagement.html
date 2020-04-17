@@ -8,13 +8,12 @@
     <script src="/static/css/jquery-3.4.1.min.js"></script> 
     <title>My Album</title>
     <script src= "/static/templates/index_jquery.js"></script>
-
 </head>
 <body>
 <div id = "content">
     <div class="tags" >
         {{range $index, $tag := .tags}}
-        <button id="delete">{{ $tag }}</button>
+            <button id="delete">{{ $tag }}</button>
         {{end}}
     </div>    
 </div>

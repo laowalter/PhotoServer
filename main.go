@@ -115,8 +115,24 @@ func (c *RootController) PostAddtags(ctx iris.Context) {
 	model.AddTags(tagsWithFiles)
 }
 
-//http://192.168.0.199:8080/tagmgnt
-func (c *RootController) GetTagmgnt(ctx iris.Context) mvc.Result {
-	view := rootview.TagManagement()
+//Get http://192.168.0.199:8080/slide
+func (c *RootController) GetSlide(ctx iris.Context) mvc.Result {
+	view := rootview.SlideView()
 	return view
+}
+
+//Post: http://192.168.0.199:8080/slide
+func (c *RootController) PostSlide(ctx iris.Context) {
+
+	type slideFile struct {
+		Path string `json:"path"`
+	}
+	var photo slideFile
+	if err := ctx.ReadJSON(&photo); err != nil {
+		ctx.StatusCode(iris.StatusBadRequest)
+		ctx.JSON(iris.Map{"status": iris.StatusBadRequest, "message": err.Error()})
+		return
+	}
+	photoBase64 := model.GenOriginalPicBase64(photo.Path)
+	ctx.JSON(iris.Map{"status": iris.StatusOK, "message": photoBase64})
 }
