@@ -12,7 +12,7 @@ import (
 
 func GetYearList() ([]*global.YearCount, error) {
 	var yearCount []*global.YearCount
-	col, err := connectToPic()
+	col, err := ConnectToPic()
 	if err != nil {
 		fmt.Println("Error Can not connect to PIC collection")
 		return yearCount, err

@@ -63,7 +63,7 @@ func QueryAllPhotosOnepage() ([]global.Document, error) {
 	var documentList []global.Document
 	filter := bson.M{}
 
-	col, err := connectToPic()
+	col, err := ConnectToPic()
 	if err != nil {
 		fmt.Println("Error Can not connect to PIC collection")
 		return documentList, err
@@ -80,7 +80,7 @@ func QueryAllPhotosOnepage() ([]global.Document, error) {
 func CountDocumentsPages() (int64, error) {
 	var totalPages int64
 
-	col, err := connectToPic()
+	col, err := ConnectToPic()
 	if err != nil {
 		fmt.Println("Error Can not connect to PIC collection")
 		return 0, err
@@ -112,7 +112,7 @@ func getMultipleDocuments(filter bson.M, pageNumber int64) ([]global.Document, i
 	var documentList []global.Document
 	var totalPages int64
 
-	col, err := connectToPic()
+	col, err := ConnectToPic()
 	if err != nil {
 		fmt.Println("Error Can not connect to PIC collection")
 		return documentList, 0, err
@@ -168,7 +168,7 @@ func QueryPhotoByMd5(md5 string) (global.Document, error) {
 
 	var document global.Document
 
-	col, err := connectToPic()
+	col, err := ConnectToPic()
 	if err != nil {
 		fmt.Println("Error Can not connect to PIC collection")
 		return document, err

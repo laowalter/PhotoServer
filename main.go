@@ -7,14 +7,11 @@ import (
 	"strings"
 
 	"github.com/kataras/iris"
-	"github.com/photoServer/global"
 	"github.com/photoServer/model"
 	"github.com/photoServer/view/rootview"
 
 	"github.com/kataras/iris/mvc"
 )
-
-var GlobalYearList []*global.YearCount
 
 func main() {
 	app := iris.New()
@@ -133,7 +130,8 @@ func (c *RootController) PostSlide(ctx iris.Context) {
 	ctx.JSON(iris.Map{"status": iris.StatusOK, "message": photoBase64})
 }
 
+//Post: http://192.168.0.199:8080/slideany
 func (c *RootController) PostSlideany(ctx iris.Context) {
-	//next
-	fmt.Println("i am active")
+
+	ctx.JSON(iris.Map{"status": iris.StatusOK, "message": photoBase64})
 }

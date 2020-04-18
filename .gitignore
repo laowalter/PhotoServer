@@ -9,7 +9,6 @@
 *.BMP
 *.tiff
 *.TIFF
-test/*
 tmp/*
 main
 picupdate

@@ -21,7 +21,7 @@ func connectToDB(uri, dbname string) (*mongo.Database, error) {
 }
 */
 
-func connectToPic() (*mongo.Collection, error) {
+func ConnectToPic() (*mongo.Collection, error) {
 	database, collection, uri := global.DBname, global.PICcol, global.MongoUri
 	clientOptions := options.Client().ApplyURI(uri)
 	client, err := mongo.Connect(context.TODO(), clientOptions)

@@ -10,7 +10,7 @@ import (
 
 func ListTags() ([]string, error) {
 	//Find all the distinct tags.
-	col, err := connectToPic()
+	col, err := ConnectToPic()
 	if err != nil {
 		fmt.Println("Error Can not connect to PIC collection")
 		return []string{}, err

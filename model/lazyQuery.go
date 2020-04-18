@@ -8,25 +8,30 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func NextPhoto(cursor *mongo.Cursor) func() (*mongo.Cursor, string) {
-	return func() (*mongo.Cursor, string) {
-		var document global.Document
+func NextPhoto(cursor *mongo.Cursor) func() *mongo.Cursor {
+
+	// var document global.Document
+	// err := cursor.Decode(&document)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// fmt.Println(document.Path)
+	return func() *mongo.Cursor {
 		if cursor.Next(context.TODO()) {
+			var document global.Document
 			err := cursor.Decode(&document)
 			if err != nil {
-				fmt.Println("Cursor Decode error in cursor.Next()", err)
-				return nil, ""
+				panic(err)
 			}
+			fmt.Println(document.Path)
 		}
-		photoBase64 := GenOriginalPicBase64(document.Path)
-		return cursor, photoBase64
-
+		return cursor
 	}
 }
 
-// col, err := connectToPic()
+// col, err := ConnectToPic()
 // if err != nil {
-// 	fmt.Pr*mongo.Cursorln("Error Can not connect to PIC collection")
+// 	fmt.Println("Error Can not connect to PIC collection")
 // 	return "", err
 // }
 // ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)

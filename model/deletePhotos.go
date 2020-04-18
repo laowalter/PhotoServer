@@ -31,7 +31,7 @@ func DeletePhotos(filePathList []string) {
 }
 
 func removeThumbFromDB(removed []string) {
-	col, err := connectToPic()
+	col, err := ConnectToPic()
 	if err != nil {
 		fmt.Println("Error Can not connect to PIC collection")
 		return

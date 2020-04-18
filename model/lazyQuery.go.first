@@ -17,7 +17,7 @@ func PhotoNext() (string, error) {
 	//用于确定在templates中的pagination计算。
 	var document global.Document
 
-	col, err := connectToPic()
+	col, err := ConnectToPic()
 	if err != nil {
 		fmt.Println("Error Can not connect to PIC collection")
 		return "", err

@@ -19,7 +19,7 @@ func AddTags(tagsWithFiles string) {
 	_tags = space.ReplaceAllString(_tags, " ")
 	tags := strings.Split(_tags, " ")
 	files := strings.Split(_files, ",")
-	col, err := connectToPic()
+	col, err := ConnectToPic()
 
 	if err != nil {
 		fmt.Println("Error Can not connect to PIC collection")
