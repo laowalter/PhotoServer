@@ -13,6 +13,8 @@ import (
 	"github.com/kataras/iris/mvc"
 )
 
+var TAG = true // if need to initial NextPhoto
+
 func main() {
 	app := iris.New()
 	//app.Use(recover.New())
@@ -132,6 +134,6 @@ func (c *RootController) PostSlide(ctx iris.Context) {
 
 //Post: http://192.168.0.199:8080/slideany
 func (c *RootController) PostSlideany(ctx iris.Context) {
-
-	ctx.JSON(iris.Map{"status": iris.StatusOK, "message": photoBase64})
+	getPhoto := model.NextPhoto()
+	ctx.JSON(iris.Map{"status": iris.StatusOK, "message": getPhoto()})
 }
