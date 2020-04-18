@@ -31,9 +31,11 @@ func DeletePhotos(filePathList []string) {
 }
 
 func removeThumbFromDB(removed []string) {
-	database, collection, uri := "album", "pic", "mongodb://localhost:27017"
-	db, _ := connectToDB(uri, database)
-	col := db.Collection(collection)
+	col, err := connectToPic()
+	if err != nil {
+		fmt.Println("Error Can not connect to PIC collection")
+		return
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 

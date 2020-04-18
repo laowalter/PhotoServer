@@ -12,19 +12,22 @@ import (
 
 func GetYearList() ([]*global.YearCount, error) {
 	var yearCount []*global.YearCount
-	database, collection, uri := "album", "pic", "mongodb://localhost:27017"
-	db, _ := connectToDB(uri, database)
-	col := db.Collection(collection)
+	col, err := connectToPic()
+	if err != nil {
+		fmt.Println("Error Can not connect to PIC collection")
+		return yearCount, err
+	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 200*time.Second)
 	defer cancel()
-	/*
-		db.pic.aggregate({$group:
-			{ _id:   {year:{$year:"$createdate"}},
-			  counter:{$sum:1}
-		    }},
-			{$sort:{"_id.year":-1}}
-		  )
+
+	/* The following pipline:
+	db.pic.aggregate({$group:
+		{ _id:   {year:{$year:"$createdate"}},
+		  counter:{$sum:1}
+	    }},
+		{$sort:{"_id.year":-1}}
+	  )
 	*/
 	pipeline := []bson.M{bson.M{"$group": bson.M{"_id": bson.M{"year": bson.M{"$year": "$createdate"}},
 		"counter": bson.M{"$sum": 1},

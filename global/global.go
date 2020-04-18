@@ -13,6 +13,11 @@ const (
 
 	//Deleted file Directory
 	RemovedDir = "/data/album/delete"
+
+	//Mongodatabase
+	MongoUri = "mongodb://localhost:27017"
+	DBname   = "album"
+	PICcol   = "pic"
 )
 
 type Document struct {

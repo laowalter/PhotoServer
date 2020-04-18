@@ -51,8 +51,7 @@ func (c *RootController) Get(ctx iris.Context) mvc.Result {
 	fmt.Println(currentPage)
 	if err != nil {
 		totalPages, err := model.CountDocumentsPages()
-		if err != nil {
-			//Database total photopage calculate wrong
+		if err != nil { //Database total photopage calculate wrong
 			panic(err)
 		}
 
@@ -61,7 +60,6 @@ func (c *RootController) Get(ctx iris.Context) mvc.Result {
 			currentPage = 1
 		}
 	}
-	//view := ajaxview.RootView(currentPage, ctx.IsMobile())
 	view := rootview.RootView(currentPage, ctx.IsMobile())
 	return view
 }
@@ -77,7 +75,6 @@ func (c *RootController) GetYear(ctx iris.Context) mvc.Result {
 		fmt.Println("Did not currentPage")
 	}
 	view := rootview.YearView(currentYear, currentPage, ctx.IsMobile())
-	//view := ajaxview.YearView(currentYear, currentPage, ctx.IsMobile())
 	return view
 }
 
@@ -121,9 +118,8 @@ func (c *RootController) GetSlide(ctx iris.Context) mvc.Result {
 	return view
 }
 
-//Post: http://192.168.0.199:8080/slide
+//Post: http://192.168.0.199:8080/slide for given {"path": /bala/bala/foo.jpg"}
 func (c *RootController) PostSlide(ctx iris.Context) {
-
 	type slideFile struct {
 		Path string `json:"path"`
 	}
@@ -135,4 +131,9 @@ func (c *RootController) PostSlide(ctx iris.Context) {
 	}
 	photoBase64 := model.GenOriginalPicBase64(photo.Path)
 	ctx.JSON(iris.Map{"status": iris.StatusOK, "message": photoBase64})
+}
+
+func (c *RootController) PostSlideany(ctx iris.Context) {
+	//next
+	fmt.Println("i am active")
 }

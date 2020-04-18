@@ -11,15 +11,4 @@ func SlideView() mvc.Result {
 		Name: "slide.html",
 		Data: iris.Map{},
 	}
-	/*
-		photoBase64 := model.GenOriginalPicBase64(Path)
-		return &mvc.View{
-			Name: "singlePhoto.html",
-			Data: iris.Map{
-				"thumb": photoBase64,
-				"photo": document,
-			},
-		}
-	*/
-
 }

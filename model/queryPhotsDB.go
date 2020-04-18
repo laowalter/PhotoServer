@@ -58,12 +58,33 @@ func QueryAllPhotos(pageNumber int64) ([]global.Document, int64, error) {
 
 }
 
+func QueryAllPhotosOnepage() ([]global.Document, error) {
+	//搜索条件: 全部数据
+	var documentList []global.Document
+	filter := bson.M{}
+
+	col, err := connectToPic()
+	if err != nil {
+		fmt.Println("Error Can not connect to PIC collection")
+		return documentList, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	col.Find(ctx, filter)
+
+	return documentList, nil
+
+}
+
 func CountDocumentsPages() (int64, error) {
 	var totalPages int64
 
-	database, collection, uri := "album", "pic", "mongodb://localhost:27017"
-	db, _ := connectToDB(uri, database)
-	col := db.Collection(collection)
+	col, err := connectToPic()
+	if err != nil {
+		fmt.Println("Error Can not connect to PIC collection")
+		return 0, err
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -91,9 +112,11 @@ func getMultipleDocuments(filter bson.M, pageNumber int64) ([]global.Document, i
 	var documentList []global.Document
 	var totalPages int64
 
-	database, collection, uri := "album", "pic", "mongodb://localhost:27017"
-	db, _ := connectToDB(uri, database)
-	col := db.Collection(collection)
+	col, err := connectToPic()
+	if err != nil {
+		fmt.Println("Error Can not connect to PIC collection")
+		return documentList, 0, err
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -145,14 +168,16 @@ func QueryPhotoByMd5(md5 string) (global.Document, error) {
 
 	var document global.Document
 
-	database, collection, uri := "album", "pic", "mongodb://localhost:27017"
-	db, _ := connectToDB(uri, database)
-	col := db.Collection(collection)
+	col, err := connectToPic()
+	if err != nil {
+		fmt.Println("Error Can not connect to PIC collection")
+		return document, err
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	filter := bson.M{"md5": md5}
-	err := col.FindOne(ctx, filter).Decode(&document)
+	err = col.FindOne(ctx, filter).Decode(&document)
 	if err != nil {
 		return document, err
 	}

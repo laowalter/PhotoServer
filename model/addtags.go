@@ -19,10 +19,13 @@ func AddTags(tagsWithFiles string) {
 	_tags = space.ReplaceAllString(_tags, " ")
 	tags := strings.Split(_tags, " ")
 	files := strings.Split(_files, ",")
+	col, err := connectToPic()
 
-	database, collection, uri := "album", "pic", "mongodb://localhost:27017"
-	db, _ := connectToDB(uri, database)
-	col := db.Collection(collection)
+	if err != nil {
+		fmt.Println("Error Can not connect to PIC collection")
+		return
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 

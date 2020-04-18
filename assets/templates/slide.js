@@ -18,15 +18,15 @@ $(function(){
     function successCallback(result){
             $.when(result).done(function(result){
                 if ($("#curr").length==0){
-                    $(".slide").append('<img height="300px" id="curr" src="data:image/jpeg;base64,'+ result.message + '" alt="'+list[index] +' onload="$(this).fadeIn(3000) ">');
+                    $(".slide").append('<img height="300px" id="curr" src="data:image/jpeg;base64,'+ result.message + '" alt="'+list[index] +'">');
                 }else{
-                    $(".slide").append('<img height="300px" id="next" src="data:image/jpeg;base64,'+ result.message + '" alt="'+list[index] +' onload="$(this).fadeIn(3000) ">');
+                    $(".slide").append('<img height="300px" id="next" src="data:image/jpeg;base64,'+ result.message + '" alt="'+list[index] +'">');
                     $("#curr").attr("id", "prev");
+                    $("#prev").slideDown("slow");
+                    $("#prev").remove();
                     $("#next").attr("id", "curr");
-                    //$("#curr").fadeIn(3000);
                 }
             });
-        
             sleep(5000)
             index= index + 1;
             if (index<list.length){
