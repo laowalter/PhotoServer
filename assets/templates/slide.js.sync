@@ -1,0 +1,49 @@
+$(function(){
+
+    var list = ["/data/album/Jiangjunying_iphone6/100APPLE/IMG_0768.JPG",
+                "/data/album/2008/2008-338.jpg",
+                "/data/album/Jiangjunying_iphone6/102APPLE/IMG_2990.JPG",
+                "/data/album/Jiangjunying_iphone6/102APPLE/IMG_2965.JPG",
+                "/data/album/Jiangjunying_iphone6/102APPLE/IMG_2939.JPG"];
+
+    for (let i = 0; i < list.length; ++i){
+        var result = getPhoto(list[i]);
+        if ($("#curr").length==0){
+            $(".slide").append('<img height="300px" id="curr" src="data:image/jpeg;base64,'
+                                + result.message + '" alt="'+list[i] +'">');
+            sleep(5000);
+            alert("OK1");
+        }else{
+            $(".slide").append('<img height="300px" id="next" src="data:image/jpeg;base64,'
+                                + result.message + '" alt="'+list[i] +'">');
+
+            alert("OK2");
+            $("#curr").attr("id", "prev");
+            $("#next").attr("id", "curr");
+        }
+
+    }
+
+    function sleep(miliseconds) {
+        var currentTime = new Date().getTime();
+            while (currentTime + miliseconds >= new Date().getTime()) {
+        }
+    }
+
+    function getPhoto(file){ // Async mode, success -> successCallback
+        var photoBase64;  
+        var data = {"path": file};
+        console.log(file);
+        $.ajax({ 
+            type: "post", 
+            url: "/slide", 
+            contentType: 'application/json;charset=utf-8',
+            dataType: 'json',
+            data: JSON.stringify(data),
+            async: false,
+            success:function(result){ photoBase64 = result; },
+            error: function(xhr, status){alert("file not found");}
+        }); 
+        return photoBase64;
+    }
+});

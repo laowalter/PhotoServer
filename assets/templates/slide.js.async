@@ -23,11 +23,10 @@ $(function(){
                     $(".slide").append('<img height="300px" id="next" src="data:image/jpeg;base64,'+ result.message + '" alt="'+list[index] +' onload="$(this).fadeIn(3000) ">');
                     $("#curr").attr("id", "prev");
                     $("#next").attr("id", "curr");
-                    //$("#curr").fadeIn(3000);
+                    $("#curr").fadeIn(7000);
                 }
             });
         
-            sleep(5000)
             index= index + 1;
             if (index<list.length){
                 getPhoto(list[index]);
@@ -49,11 +48,5 @@ $(function(){
             success:function(result){successCallback(result)},
             error: function(xhr, status){alert("file not found");}
         }); 
-    }
-
-    function sleep(miliseconds) {
-        var currentTime = new Date().getTime();
-            while (currentTime + miliseconds >= new Date().getTime()) {
-        }
     }
 });

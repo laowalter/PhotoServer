@@ -18,16 +18,16 @@ $(function(){
     function successCallback(result){
             $.when(result).done(function(result){
                 if ($("#curr").length==0){
-                    $(".slide").append('<img height="300px" id="curr" src="data:image/jpeg;base64,'+ result.message + '" alt="'+list[index] +' onload="$(this).fadeIn(3000) ">');
+                    $(".slide").append('<img height="300px" id="curr" src="data:image/jpeg;base64,'+ result.message + '" alt="'+list[index] +'">');
                 }else{
-                    $(".slide").append('<img height="300px" id="next" src="data:image/jpeg;base64,'+ result.message + '" alt="'+list[index] +' onload="$(this).fadeIn(3000) ">');
+                    $("#curr").delay(5000).fadeOut(3000);
+                    $(".slide").append('<img height="300px" id="next" src="data:image/jpeg;base64,'+ result.message + '" alt="'+list[index] +'">');
+                    $("#next").fadeIn(3000);
                     $("#curr").attr("id", "prev");
                     $("#next").attr("id", "curr");
-                    //$("#curr").fadeIn(3000);
                 }
             });
         
-            sleep(5000)
             index= index + 1;
             if (index<list.length){
                 getPhoto(list[index]);
@@ -49,11 +49,5 @@ $(function(){
             success:function(result){successCallback(result)},
             error: function(xhr, status){alert("file not found");}
         }); 
-    }
-
-    function sleep(miliseconds) {
-        var currentTime = new Date().getTime();
-            while (currentTime + miliseconds >= new Date().getTime()) {
-        }
     }
 });
