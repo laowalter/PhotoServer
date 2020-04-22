@@ -12,3 +12,10 @@ func SlideView() mvc.Result {
 		Data: iris.Map{},
 	}
 }
+
+func SlideAnyView() mvc.Result {
+	return &mvc.View{
+		Name: "slideany.html",
+		Data: iris.Map{},
+	}
+}

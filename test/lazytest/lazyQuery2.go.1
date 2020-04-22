@@ -1,0 +1,49 @@
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/photoServer/global"
+	"github.com/photoServer/model"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+)
+
+func NextPhoto2() func() *mongo.Cursor {
+	//Closure function, search all record
+	//Usage:
+	// c1 := model.NextPhoto()
+	// c1()
+	// c1()
+
+	col, _ := model.ConnectToPic()
+	cursor, err := col.Find(context.TODO(), bson.M{})
+	if err != nil {
+		panic(err)
+	}
+
+	return func() *mongo.Cursor {
+		if cursor.Next(context.TODO()) {
+		} else {
+			return cursor
+		}
+		var document global.Document
+		err := cursor.Decode(&document)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(document.Path)
+		return cursor
+	}
+}
+
+func main() {
+	c1 := NextPhoto2()
+	c1()
+	c1()
+	c1()
+	c1()
+	c1()
+
+}

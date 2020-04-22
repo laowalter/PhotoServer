@@ -2,33 +2,44 @@ package model
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/photoServer/global"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func NextPhoto() func() *mongo.Cursor {
-	//Closure function, search all record, return one fro every apply
+func NextPhoto() func() string {
+	//Closure function, search all record
 	//Usage:
 	// c1 := model.NextPhoto()
 	// c1()
 	// c1()
 
 	col, _ := ConnectToPic()
-	cursor, _ := col.Find(context.TODO(), bson.M{})
+	cursor, err := col.Find(context.TODO(), bson.M{})
+	if err != nil {
+		panic(err)
+	}
 
-	return func() *mongo.Cursor {
-
+	return func() string {
 		if cursor.Next(context.TODO()) {
 			var document global.Document
 			err := cursor.Decode(&document)
 			if err != nil {
-				return nil
+				panic(err)
 			}
-			fmt.Println(document.Path)
+			base64Pic := GenOriginalPicBase64(document.Path)
+			return base64Pic
+		} else {
+			return ""
 		}
-		return cursor
+
 	}
 }
+
+// func handleRoute() iris.Handler {
+// 	c1 := NextPhoto2()
+// 	return func(ctx iris.Context) {
+// 		ctx.JSON(iris.Map{"status": iris.StatusOK, "message": c1()})
+
+// 	}
+// }

@@ -9,13 +9,16 @@ import (
 	"github.com/kataras/iris"
 	"github.com/photoServer/model"
 	"github.com/photoServer/view/rootview"
+	"go.mongodb.org/mongo-driver/mongo"
 
 	"github.com/kataras/iris/mvc"
 )
 
-var TAG = true // if need to initial NextPhoto
+var SlideCursor func() *mongo.Cursor // if need to initial NextPhoto
 
 func main() {
+	SlideCursor = model.NextPhoto()
+
 	app := iris.New()
 	//app.Use(recover.New())
 	//app.Logger().SetLevel("debug")
@@ -26,6 +29,8 @@ func main() {
 
 	tmpl := iris.HTML("./assets/templates", ".html")
 	app.RegisterView(tmpl)
+
+	app.Handle("POST", "/slideany", handleRoute())
 
 	mvc.Configure(app.Party("/"), rootMVC)
 	app.Run(iris.Addr(":8080"))
@@ -125,15 +130,22 @@ func (c *RootController) PostSlide(ctx iris.Context) {
 	var photo slideFile
 	if err := ctx.ReadJSON(&photo); err != nil {
 		ctx.StatusCode(iris.StatusBadRequest)
-		//ctx.JSON(iris.Map{"status": iris.StatusBadRequest, "message": err.Error()})
 		return
 	}
 	photoBase64 := model.GenOriginalPicBase64(photo.Path)
 	ctx.JSON(iris.Map{"status": iris.StatusOK, "message": photoBase64})
 }
 
+//Get http://192.168.0.199:8080/slideany
+func (c *RootController) GetSlideany(ctx iris.Context) mvc.Result {
+	view := rootview.SlideAnyView()
+	return view
+}
+
 //Post: http://192.168.0.199:8080/slideany
-func (c *RootController) PostSlideany(ctx iris.Context) {
-	getPhoto := model.NextPhoto()
-	ctx.JSON(iris.Map{"status": iris.StatusOK, "message": getPhoto()})
+func handleRoute() iris.Handler {
+	c1 := model.NextPhoto2()
+	return func(ctx iris.Context) {
+		ctx.JSON(iris.Map{"status": iris.StatusOK, "message": c1()})
+	}
 }
