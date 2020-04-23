@@ -60,6 +60,38 @@ type Pagers struct {
 	After   []int64
 }
 
+type GPSJson struct {
+	Place_id     int64   `json:"place_id"`
+	Licence      string  `json:"licence"`
+	Osm_type     string  `json:"osm_type"`
+	Osm_id       int64   `json:"osm_id"`
+	Lat          string  `json:"lat"`
+	Lon          string  `json:"lon"`
+	Place_rank   int64   `json:"place_rank"`
+	Category     string  `json:"category"`
+	Type         string  `json:"type"`
+	Importance   float64 `json:"importance"`
+	Addresstype  string  `json:"addresstype"`
+	Display_name string  `json:"display_name"`
+	Name         string  `json:"name"`
+	//Address      Address  `json:"address"`
+	Address     map[string]interface{} `json:"address"`
+	Boundingbox []string               `json:"boundingbox"`
+}
+
+type Address struct {
+	City           string `json:"city"`
+	Building       string `json:"building"`
+	Province       string `json:"province"`
+	Road           string `json:"road"`
+	Village        string `json:"village"`
+	State_district string `json:"State_district"`
+	State          string `json:"state"`
+	Postcode       string `json:"postcode"`
+	Country        string `json:"country"`
+	Country_code   string `json:country_code`
+}
+
 type YearCount struct {
 	Year   int32 //return from mongodb was int32 origial
 	Number int32

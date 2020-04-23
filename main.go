@@ -17,8 +17,6 @@ import (
 var SlideCursor func() *mongo.Cursor // if need to initial NextPhoto
 
 func main() {
-	SlideCursor = model.NextPhoto()
-
 	app := iris.New()
 	//app.Use(recover.New())
 	//app.Logger().SetLevel("debug")
@@ -144,7 +142,7 @@ func (c *RootController) GetSlideany(ctx iris.Context) mvc.Result {
 
 //Post: http://192.168.0.199:8080/slideany
 func handleRoute() iris.Handler {
-	c1 := model.NextPhoto2()
+	c1 := model.NextPhoto()
 	return func(ctx iris.Context) {
 		ctx.JSON(iris.Map{"status": iris.StatusOK, "message": c1()})
 	}

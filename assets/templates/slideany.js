@@ -5,6 +5,26 @@ $(function(){
 
     var index =0
     getPhoto();
+
+
+    function getPhoto(){ // Async mode, success -> successCallback
+        var data = {"path": "any"};
+        $.ajax({ 
+            type: "post", 
+            url: "/slideany", 
+            contentType: 'application/json;charset=utf-8',
+            dataType: 'json',
+            data: JSON.stringify(data),
+            async: true,
+            success:function(result){
+                successCallback(result);
+            },
+            error: function(xhr, status){alert("file not found");}
+        }); 
+    }
+
+    setTimeout(getPhoto(), 10000);
+
     function successCallback(result){
         $.when(result).done(function(result){
             if ($("#curr").length==0){
@@ -21,25 +41,7 @@ $(function(){
         getPhoto();
     }
     
-    function getPhoto(){ // Async mode, success -> successCallback
-        var data = {"path": "any"};
-        $.ajax({ 
-            type: "post", 
-            url: "/slideany", 
-            contentType: 'application/json;charset=utf-8',
-            dataType: 'json',
-            data: JSON.stringify(data),
-            async: true,
-            success:function(result){
-                //Dont know how to set delay.
-                setTimeout(function(){
-                    //alert("Boom!");
-                }, 32000);
-                successCallback(result)
-            },
-            error: function(xhr, status){alert("file not found");}
-        }); 
-    }
+
 
     function sleep(miliseconds) {
         var currentTime = new Date().getTime();
