@@ -61,22 +61,21 @@ type Pagers struct {
 }
 
 type GPSJson struct {
-	Place_id     int64   `json:"place_id"`
-	Licence      string  `json:"licence"`
-	Osm_type     string  `json:"osm_type"`
-	Osm_id       int64   `json:"osm_id"`
-	Lat          string  `json:"lat"`
-	Lon          string  `json:"lon"`
-	Place_rank   int64   `json:"place_rank"`
-	Category     string  `json:"category"`
-	Type         string  `json:"type"`
-	Importance   float64 `json:"importance"`
-	Addresstype  string  `json:"addresstype"`
-	Display_name string  `json:"display_name"`
-	Name         string  `json:"name"`
-	//Address      Address  `json:"address"`
-	Address     map[string]interface{} `json:"address"`
-	Boundingbox []string               `json:"boundingbox"`
+	Place_id     int64                  `json:"place_id"`
+	Licence      string                 `json:"licence"`
+	Osm_type     string                 `json:"osm_type"`
+	Osm_id       int64                  `json:"osm_id"`
+	Lat          string                 `json:"lat"`
+	Lon          string                 `json:"lon"`
+	Place_rank   int64                  `json:"place_rank"`
+	Category     string                 `json:"category"`
+	Type         string                 `json:"type"`
+	Importance   float64                `json:"importance"`
+	Addresstype  string                 `json:"addresstype"`
+	Display_name string                 `json:"display_name"`
+	Name         string                 `json:"name"`
+	Address      map[string]interface{} `json:"address"`
+	Boundingbox  []string               `json:"boundingbox"`
 }
 
 type Address struct {

@@ -71,10 +71,29 @@ func QueryAllPhotosOnepage() ([]global.Document, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	col.Find(ctx, filter)
 
-	return documentList, nil
+	cursor, err := col.Find(ctx, filter)
+	if err != nil {
+		fmt.Println("Finding all documents ERROR:", err)
+		defer cursor.Close(ctx)
+		return documentList, err
 
+	} else {
+		for cursor.Next(ctx) {
+			var document global.Document
+			err := cursor.Decode(&document)
+			if err != nil {
+				fmt.Println("cursor.Next() error:", err)
+				return documentList, err
+			}
+
+			//Encode pic path with base64 for iris url param get()
+			document.PathBase64 = base64.StdEncoding.EncodeToString([]byte(document.Path))
+			documentList = append(documentList, document)
+		}
+		return documentList, nil
+
+	}
 }
 
 func CountDocumentsPages() (int64, error) {

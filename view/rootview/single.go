@@ -9,12 +9,15 @@ import (
 )
 
 func SinglePhotoView(md5 string) mvc.Result {
+
 	document, err := model.QueryPhotoByMd5(md5)
+
 	if err != nil {
 		fmt.Println("Can to get the Single document by md5.")
 	}
 
 	photoBase64 := model.GenOriginalPicBase64(document.Path)
+
 	return &mvc.View{
 		Name: "singlePhoto.html",
 		Data: iris.Map{
