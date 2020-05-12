@@ -26,7 +26,9 @@ func main() {
 
 		fmt.Printf("Dealing with: %v, latitude: %v, longitude: %v\n", document.Path, document.Latitude, document.Longitude)
 		gps := model.ReverseGeocoding(document.Latitude, document.Longitude)
-		for 
+		for k, v := range gps.Address {
+			fmt.Println(k, v)
+		}
 
 	}
 
