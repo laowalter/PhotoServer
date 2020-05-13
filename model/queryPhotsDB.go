@@ -44,6 +44,31 @@ func QueryPhotosByYear(year int, pageNumber int64) ([]global.Document, int64, er
 	return documentList, totalPages, nil
 }
 
+func QueryGPSByMd5(md5 string) (string, error) {
+	//按照md5查询数据库，
+	col, err := ConnectToGps()
+	if err != nil {
+		fmt.Println("Error Can not connect to PIC collection")
+		return "", err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	filter := bson.M{"md5": md5}
+
+	var result struct {
+		Md5        string `bson:"md5"`
+		GpsAddress string `bson:"gpsAddress"`
+	}
+	err = col.FindOne(ctx, filter).Decode(&result)
+	if err != nil {
+		fmt.Println("Can not Decode &result in func QueryGPS")
+		return "", err
+	}
+	return result.GpsAddress, nil
+}
+
 func QueryAllPhotos(pageNumber int64) ([]global.Document, int64, error) {
 	//分页查询
 	//搜索条件: 全部数据

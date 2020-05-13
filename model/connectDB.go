@@ -34,3 +34,17 @@ func ConnectToPic() (*mongo.Collection, error) {
 	col = client.Database(database).Collection(collection)
 	return col, nil
 }
+
+func ConnectToGps() (*mongo.Collection, error) {
+	database, collection, uri := global.DBname, "gps", global.MongoUri
+	clientOptions := options.Client().ApplyURI(uri)
+	client, err := mongo.Connect(context.TODO(), clientOptions)
+
+	var col *mongo.Collection
+	if err != nil {
+		fmt.Println("mongo.Connect() ERROR:", err)
+		return col, err
+	}
+	col = client.Database(database).Collection(collection)
+	return col, nil
+}

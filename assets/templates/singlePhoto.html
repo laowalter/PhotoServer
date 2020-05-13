@@ -25,6 +25,7 @@
         {{if .photo.FocalLength}}Focus: {{.photo.FocalLength}}&nbsp;&nbsp;{{end}}
         {{if .photo.LensID}}Lens: {{.photo.LensID}}&nbsp;&nbsp;{{end}}
         {{if .photo.Longitude}}GPS: {{.photo.Longitude}} &nbsp;{{.photo.Latitude}}{{end}}</p></p>
+        <p>{{if .gps}}Address:{{.gps}}{{end}}</p>
         </div>
     </div>
 </body>

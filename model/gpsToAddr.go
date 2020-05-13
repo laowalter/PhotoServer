@@ -63,7 +63,7 @@ func GPSdegreeToDecimal(deg string) string {
 	for i, name := range re.SubexpNames() {
 		if i != 0 && name != "" {
 			result[name] = match[i]
-			fmt.Println(result["name"])
+			//fmt.Println(result["name"])
 		}
 	}
 

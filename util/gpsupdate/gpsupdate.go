@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	. "github.com/logrusorgru/aurora"
 	"github.com/photoServer/global"
@@ -27,7 +28,10 @@ func main() {
 	}
 
 	fmt.Println("Total number of photos is:", len(documentList), "Scanning...")
+
+	counter := 0
 	for _, document := range documentList {
+
 		strings.TrimSpace(document.Latitude)
 		strings.TrimSpace(document.Longitude)
 
@@ -36,45 +40,45 @@ func main() {
 		}
 
 		fmt.Printf("Dealing with: %v, latitude: %v, longitude: %v\n", document.Path, document.Latitude, document.Longitude)
-		gps := model.ReverseGeocoding(document.Latitude, document.Longitude)
-		gpsAddress := ""
-		for _, v := range gps.Address {
-			value := fmt.Sprintf("%v", v)
-			gpsAddress = gpsAddress + "," + value
-		}
-		gpsAddress = gpsAddress[1:len(gpsAddress)]
-		fmt.Printf("Address: %v\n", gpsAddress)
-		updateGPSDB(col, document, gpsAddress)
-	}
-}
-
-func updateGPSDB(collection *mongo.Collection, document global.Document, address string) {
-	insert := bson.M{"document.Md5": document.Md5, "gpsAddress": address}
-	_, insertErr := collection.InsertOne(context.TODO(), insert)
-	if insertErr != nil {
-		//check if the Md5 already exist in db is yes
 		filter := bson.M{"md5": document.Md5}
-		count, err := collection.CountDocuments(context.TODO(), filter)
+		count, err := col.CountDocuments(context.TODO(), filter)
 		if err != nil {
 			fmt.Println("Can not search by Md5")
 		}
-		if count >= 1 {
-			update := bson.M{"$set": bson.M{"document.Md5": document.Md5, "gpsAddress": address}}
-			_ = collection.FindOneAndUpdate(context.TODO(), filter, update)
-			fmt.Printf("File: %v already exist, filename and path updated.\n", Red(document.Path))
-			return
 
+		if count >= 1 {
+			fmt.Printf("File: %v already exist, passed.\n", Red(document.Path))
+			continue
 		} else {
-			insert := bson.M{"document.Md5": document.Md5, "gpsAddress": address}
-			_, err := collection.InsertOne(context.TODO(), insert)
-			if err != nil {
-				panic(err)
+			counter++
+			if counter%30 == 0 {
+				fmt.Println("Let me sleep for 90 seconds")
+				time.Sleep(90 * time.Second)
+			}
+			gps := model.ReverseGeocoding(document.Latitude, document.Longitude)
+			if len(gps.Address) >= 1 {
+
+				gpsAddress := ""
+				for _, v := range gps.Address {
+					value := fmt.Sprintf("%v", v)
+					gpsAddress = gpsAddress + "," + value
+				}
+
+				gpsAddress = gpsAddress[1:len(gpsAddress)]
+
+				fmt.Printf("Address: %v\n", gpsAddress)
+				insert := bson.M{"md5": document.Md5, "gpsAddress": gpsAddress}
+				_, err := col.InsertOne(context.TODO(), insert)
+				if err != nil {
+					panic(err)
+				}
+
+			} else {
+				continue
 			}
 
 		}
-
 	}
-	return
 }
 
 func connectToDB(uri, dbname string, collection string) (*mongo.Collection, error) {

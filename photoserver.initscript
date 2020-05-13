@@ -1,0 +1,26 @@
+#!/sbin/openrc-run
+# Copyright 1999-2012 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+
+command="/home/USERNAME/go/src/github.com/photoServer/main"
+pidfile="/run/photoserver.pid"
+name="walter"
+workdir="/home/walter/go/src/github.com/photoServer/"
+depend() {
+	use net
+	use docker
+}
+
+start() {
+  ebegin "Starting PhotoServer Service"
+  start-stop-daemon --user "${name}" --chdir "${workdir}" --start --background \
+  	--exec "${command}" --make-pidfile --pidfile "${pidfile}" \
+  eend $?
+}
+
+stop() {
+  ebegin "Stopping PhotoServer service"
+  kill -HUP $(cat ${pidfile}) > /dev/null 2>&1
+  rm -f ${pidfile}
+  eend $?
+}
