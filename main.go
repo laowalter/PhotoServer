@@ -80,10 +80,11 @@ func (c *RootController) GetYear(ctx iris.Context) mvc.Result {
 	return view
 }
 
-//http://192.168.0.199:8080/single?md5=md5string
+//http://192.168.0.199:8080/single?&index=1
 func (c *RootController) GetSingle(ctx iris.Context) mvc.Result {
-	md5 := ctx.URLParam("md5")
-	view := rootview.SinglePhotoView(md5)
+	//md5 := ctx.URLParam("md5")
+	index, _ := ctx.URLParamInt64("index")
+	view := rootview.SinglePhotoView(index)
 	return view
 }
 

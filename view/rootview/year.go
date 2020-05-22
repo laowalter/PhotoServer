@@ -5,6 +5,7 @@ import (
 
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/mvc"
+	"github.com/photoServer/global"
 	"github.com/photoServer/model"
 	"github.com/photoServer/view/util"
 )
@@ -15,7 +16,8 @@ func YearView(thisyear int, currentPage int64, mobile bool) mvc.Result {
 		fmt.Println("Can not Get Year List")
 	}
 
-	yearPic, totalPages, err := model.QueryPhotosByYear(thisyear, currentPage)
+	totalPages := int64(0)
+	global.ThumbList, totalPages, err = model.QueryPhotosByYear(thisyear, currentPage)
 	if err != nil {
 		fmt.Println("Can not finding all thumbnail by year")
 	}
@@ -31,7 +33,7 @@ func YearView(thisyear int, currentPage int64, mobile bool) mvc.Result {
 		Name: template,
 		Data: iris.Map{
 			"years":       yearList,
-			"thumb":       yearPic,
+			"thumb":       global.ThumbList,
 			"totalpages":  totalPages,
 			"currentyear": thisyear,
 			"pagers":      pagers,

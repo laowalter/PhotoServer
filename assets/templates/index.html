@@ -19,7 +19,7 @@
                 {{range $index, $elem := .thumb }}
                     <!-- http://192.168.0.199:8080/ -->
                     <img class="thumb" src="data:image/jpeg;base64,{{$elem.Thumbnail}}" 
-                            path="{{.Path}}" href="single?md5={{$elem.Md5}}" />
+                    path="{{.Path}}" href="single?&index={{$index}}" />
                 {{end}}
             </div>
         </div>

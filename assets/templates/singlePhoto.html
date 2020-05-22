@@ -13,20 +13,21 @@
     <div id="container">
         <img class="imgfullscreen" src="data:image/jpeg;base64,{{.thumb}}" id="responsive-image"/>
         <div id="overlay">
-        <p>FilePath: {{.photo.Path}} &nbsp;&nbsp;
-        {{if .photo.CreateDate}}Date: {{.photo.CreateDate}}{{end}} &nbsp;&nbsp;
-        {{if .photo.FullImageSize}}Size: {{.photo.FullImageSize}}{{end}}</p>
-        <p>{{if .photo.Make}}Vendor: {{.photo.Make}}&nbsp;&nbsp;{{end}}
-        {{if .photo.Model}}Type: {{.photo.Model}}&nbsp;&nbsp;{{end}}
-        {{if .photo.ShutterSpeed}}Speed: {{.photo.ShutterSpeed}}&nbsp;&nbsp;{{end}}
-        {{if .photo.ISO}}ISO: {{.photo.ISO}}&nbsp;&nbsp;{{end}}
-        {{if .photo.Aperture}}Aperture: {{.photo.Aperture}}&nbsp;&nbsp;{{end}}
-        {{if .photo.ExposureCompensation}}ExposureCompensation: {{.photo.ExposureCompensation}}&nbsp;&nbsp;{{end}}
-        {{if .photo.FocalLength}}Focus: {{.photo.FocalLength}}&nbsp;&nbsp;{{end}}
-        {{if .photo.LensID}}Lens: {{.photo.LensID}}&nbsp;&nbsp;{{end}}
-        {{if .photo.Longitude}}GPS: {{.photo.Longitude}} &nbsp;{{.photo.Latitude}}{{end}}</p></p>
-        <p>{{if .gps}}Address:{{.gps}}{{end}}</p>
+            <p>FilePath: {{.photo.Path}} &nbsp;&nbsp;
+            {{if .photo.CreateDate}}Date: {{.photo.CreateDate}}{{end}} &nbsp;&nbsp;
+            {{if .photo.FullImageSize}}Size: {{.photo.FullImageSize}}{{end}}</p>
+            <p>{{if .photo.Make}}Vendor: {{.photo.Make}}&nbsp;&nbsp;{{end}}
+            {{if .photo.Model}}Type: {{.photo.Model}}&nbsp;&nbsp;{{end}}
+            {{if .photo.ShutterSpeed}}Speed: {{.photo.ShutterSpeed}}&nbsp;&nbsp;{{end}}
+            {{if .photo.ISO}}ISO: {{.photo.ISO}}&nbsp;&nbsp;{{end}}
+            {{if .photo.Aperture}}Aperture: {{.photo.Aperture}}&nbsp;&nbsp;{{end}}
+            {{if .photo.ExposureCompensation}}ExposureCompensation: {{.photo.ExposureCompensation}}&nbsp;&nbsp;{{end}}
+            {{if .photo.FocalLength}}Focus: {{.photo.FocalLength}}&nbsp;&nbsp;{{end}}
+            {{if .photo.LensID}}Lens: {{.photo.LensID}}&nbsp;&nbsp;{{end}}
+            {{if .photo.Longitude}}GPS: {{.photo.Longitude}} &nbsp;{{.photo.Latitude}}{{end}}</p></p>
+            <p>{{if .gps}}Address: {{.gps}}{{end}}</p>
         </div>
     </div>
+    <div id="index" src="{{.index}}"></div>
 </body>
 </html>

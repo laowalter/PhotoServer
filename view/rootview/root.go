@@ -5,6 +5,7 @@ import (
 
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/mvc"
+	"github.com/photoServer/global"
 	"github.com/photoServer/model"
 	"github.com/photoServer/view/util"
 )
@@ -15,7 +16,8 @@ func RootView(currentPage int64, mobile bool) mvc.Result {
 		fmt.Println("Can not Get Year List")
 	}
 
-	picList, totalPages, err := model.QueryAllPhotos(currentPage)
+	totalPages := int64(0)
+	global.ThumbList, totalPages, err = model.QueryAllPhotos(currentPage)
 	if err != nil {
 		fmt.Println("Can not Get Thumbnail List")
 	}
@@ -31,7 +33,7 @@ func RootView(currentPage int64, mobile bool) mvc.Result {
 		Name: template,
 		Data: iris.Map{
 			"years":      yearList,
-			"thumb":      picList,
+			"thumb":      global.ThumbList,
 			"totalpages": totalPages,
 			"pagers":     pagers,
 		},

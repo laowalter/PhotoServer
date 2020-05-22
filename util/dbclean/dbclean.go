@@ -11,6 +11,7 @@ import (
 
 	. "github.com/logrusorgru/aurora"
 	"github.com/photoServer/global"
+	"github.com/photoServer/model"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -27,6 +28,62 @@ func connectToDB(uri, dbname string) (*mongo.Database, error) {
 }
 
 func main() {
+	cleanPic()
+	cleanGps()
+}
+
+func cleanGps() {
+	colGps, err := model.ConnectToGps()
+	if err != nil {
+		fmt.Println("Can not open Collection gps")
+	}
+
+	colPic, err := model.ConnectToPic()
+	if err != nil {
+		fmt.Println("Can not open Collection gps")
+	}
+
+	cursor, err := colGps.Find(context.TODO(), bson.D{})
+	if err != nil {
+		fmt.Println("Can not find data in Collection gps")
+		return
+	} else {
+		var gpsResult struct {
+			Md5        string `bson:"md5"`
+			GpsAddress string `bson:"gpsAddress"`
+		}
+
+		for cursor.Next(context.TODO()) {
+			err := cursor.Decode(&gpsResult)
+			if err != nil {
+				fmt.Println("cursor.Next() error:", err)
+				os.Exit(1)
+			}
+
+			//fmt.Println("Md5", gpsResult.Md5)
+			filter := bson.M{"md5": gpsResult.Md5}
+
+			count, err := colPic.CountDocuments(context.TODO(), filter)
+			if err != nil {
+				fmt.Println(err)
+				fmt.Println("Can not count document in collection pic")
+				continue
+			}
+
+			if count == 0 {
+				_, err = colGps.DeleteOne(context.TODO(), filter)
+				if err != nil {
+					fmt.Println(err)
+					fmt.Printf("Can not remove the Record with Md5: %v\n", Red(gpsResult.Md5))
+					continue
+				}
+				fmt.Printf("md5: %v removed from collection gps\n", Red(gpsResult.Md5))
+			}
+		}
+	}
+}
+
+func cleanPic() {
 	database, collection, uri := "album", "pic", "mongodb://localhost:27017"
 	db, _ := connectToDB(uri, database)
 	col := db.Collection(collection)

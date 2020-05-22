@@ -3,11 +3,15 @@ module github.com/photoServer
 go 1.14
 
 require (
+	camlistore.org v0.0.0-20171230002226-a5a65f0d8b22 // indirect
+	cloud.google.com/go v0.57.0 // indirect
 	github.com/Joker/jade v1.0.0 // indirect
 	github.com/Shopify/goreferrer v0.0.0-20181106222321-ec9c9a553398 // indirect
 	github.com/ajg/form v1.5.1 // indirect
 	github.com/aymerick/raymond v2.0.2+incompatible // indirect
+	github.com/bakape/thumbnailer v1.0.0 // indirect
 	github.com/barasher/go-exiftool v1.1.1
+	github.com/bradfitz/latlong v0.0.0-20170410180902-f3db6d0dff40 // indirect
 	github.com/disintegration/imaging v1.6.2
 	github.com/eknkc/amber v0.0.0-20171010120322-cdade1c07385 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
@@ -42,5 +46,8 @@ require (
 	github.com/yudai/golcs v0.0.0-20170316035057-ecda9a501e82 // indirect
 	github.com/yudai/pp v2.0.1+incompatible // indirect
 	go.mongodb.org/mongo-driver v1.3.1
+	go4.org v0.0.0-20200411211856-f5505b9728dd // indirect
+	golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37 // indirect
+	golang.org/x/net v0.0.0-20200513185701-a91f0712d120 // indirect
 	gopkg.in/mgo.v2 v2.0.0-20180705113604-9856a29383ce
 )

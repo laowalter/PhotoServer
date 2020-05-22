@@ -115,3 +115,5 @@ func PICRAW() []string {
 func PICVIDEO() []string {
 	return append(append(PIC(), VIDEO()...), RAW()...)
 }
+
+var ThumbList []Document

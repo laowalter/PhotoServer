@@ -77,32 +77,4 @@ $(function(){
             }
         }
     });
-
-/*
-    $("#addtag").on("click", function(){
-        alert("addtag");
-        // var tag = prompt("Please enter your tag:", "");
-        // if (tag == null ||tag == "") {
-        //     return;
-        // } else {
-        //     if(confirm("Sure to Add Tag to these " + selectList.length + " photos?")){
-        //         $.ajax({ 
-        //             type: "post", 
-        //             url: "/delete", 
-        //             contentType: 'application/json',
-        //             dataType: 'text',
-        //             data: tag + "," + selectList.join(','),
-        //             success:function(result){ 
-        //                 location.reload();
-        //             },
-        //             error: function(xhr, status){ alert(xhr.status); }
-        //         }); 
-        //     }
-        // }
-
-        // else{
-        //     return false;
-        // }
-    });
-    */
 })
