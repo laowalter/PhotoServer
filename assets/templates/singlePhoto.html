@@ -4,12 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="/static/css/index.css?v=1.1">
+    <link rel="stylesheet" type="text/css" href="/static/css/index.css?v=1.1">
+    <link rel="stylesheet" type="text/css" href="/static/css/full-screen-helper.css">
     <script src="/static/css/jquery-3.4.1.slim.min.js"></script> 
     <title>MyAlbum</title>
     <script src="/static/templates/singlePhoto.js"></script>
 </head>
 <body>
+    <!-- <button onclick="FullScreenHelper.request(document);"> -->
+<img src="http://soulsnatcher.bplaced.net/LDRYh.jpg" alt="unfinished bingo card" onclick="FullScreenHelper.request(document);" />
+    <button onclick="FullScreenHelper.request(document);"> 
+        Fullscreen page
+    </button>
+    <button onclick="FullScreenHelper.exit();">
+        Exit fullscreen page
+    </button>
+
+    <script type="text/javascript" src="/static/templates/full-screen-helper.js"></script>
+    <script type="text/javascript">
+    if (typeof FullScreenHelper === "undefined") {
+        document.write("<p>FullScreenHelper is not loaded</p>");
+    } else if (FullScreenHelper.supported()) {
+        document.write("<p>Fullscreen is supported</p>");
+    } else {
+        document.write("<p>Your browser don't support fullscreen</p>");
+    }
+
+    FullScreenHelper.on(function () {
+        if (FullScreenHelper.state()) {
+          console.log("In fullscreen", FullScreenHelper.current());
+        } else {
+          console.log("Not in fullscreen");
+        }
+    });
+    </script>
+
+    </script>
     <div id="container">
         <img class="imgfullscreen" src="data:image/jpeg;base64,{{.thumb}}" id="responsive-image"/>
         <div id="overlay">
